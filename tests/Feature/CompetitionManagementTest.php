@@ -69,6 +69,27 @@ class CompetitionManagementTest extends TestCase
         ]);
     }
 
+    public function test_tournament_page_displays_team_standings_from_completed_matches(): void
+    {
+        TournamentMatch::create([
+            'tournament_id' => $this->tournament->id,
+            'round_number' => 1,
+            'match_number' => 1,
+            'team_a_id' => $this->teamA->id,
+            'team_b_id' => $this->teamB->id,
+            'score_a' => 13,
+            'score_b' => 9,
+            'winner_team_id' => $this->teamA->id,
+            'status' => 'completed',
+        ]);
+
+        $this->get(route('tournaments.show', $this->tournament))
+            ->assertOk()
+            ->assertSee('Турнирная таблица')
+            ->assertSee('Alpha Team')
+            ->assertSee('Bravo Team');
+    }
+
     public function test_match_winner_advances_to_the_correct_slot_in_the_next_round(): void
     {
         $match = TournamentMatch::create(['tournament_id' => $this->tournament->id, 'round_number' => 1, 'match_number' => 1, 'team_a_id' => $this->teamA->id, 'team_b_id' => $this->teamB->id]);
