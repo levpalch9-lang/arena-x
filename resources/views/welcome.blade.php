@@ -37,7 +37,7 @@
             <a href="#about">О платформе</a>
             <a href="#format">Форматы</a>
         </nav>
-        <a class="nav-action" href="#tournaments">Открыть турниры</a>
+        <a class="nav-action" href="/tournaments">Открыть турниры</a>
     </header>
 
     <main>
@@ -47,7 +47,7 @@
                 <h1>Время выйти<br>на арену.</h1>
                 <p class="lead">Платформа локальных киберспортивных турниров. Собирай команду, подавай заявку и доказывай своё мастерство.</p>
                 <div class="actions">
-                    <a class="button" href="#tournaments">Смотреть турниры</a>
+                    <a class="button" href="/tournaments">Смотреть турниры</a>
                     <a class="button secondary" href="#format">Как это работает</a>
                 </div>
             </div>
