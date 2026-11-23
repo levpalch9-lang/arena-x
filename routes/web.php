@@ -30,5 +30,5 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::post('/tournaments/{tournament:slug}/register', [TournamentRegistrationController::class, 'store'])->name('tournaments.register');
     Route::patch('/organizer/registrations/{registration}', [TournamentRegistrationController::class, 'review'])->name('organizer.registrations.review');
-    Route::get('/admin', AdminController::class)->middleware('role:admin')->name('admin.index');
+    Route::get('/admin', AdminController::class)->middleware('role:admin')->name('admin.index');\n    Route::patch('/admin/users/{user}/role', [AdminController::class, 'updateRole'])->middleware('role:admin')->name('admin.users.role');\n    Route::post('/teams/{team}/members', [TeamController::class, 'addMember'])->name('teams.members.add');\n    Route::delete('/teams/{team}/members/{member}', [TeamController::class, 'removeMember'])->name('teams.members.remove');\n    Route::post('/organizer/tournaments/{tournament:slug}/matches', [TournamentMatchController::class, 'store'])->name('organizer.matches.store');\n    Route::patch('/organizer/matches/{match}/score', [TournamentMatchController::class, 'updateScore'])->name('organizer.matches.score');
 });
