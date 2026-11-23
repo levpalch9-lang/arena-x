@@ -3,7 +3,11 @@
   "name": "arena-x/platform",
   "type": "project",
   "description": "ARENA X esports tournament platform",
-  "keywords": ["laravel", "esports", "tournaments"],
+  "keywords": [
+    "laravel",
+    "esports",
+    "tournaments"
+  ],
   "license": "MIT",
   "require": {
     "php": "^8.2",
@@ -35,7 +39,6 @@
       "composer install",
       "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
       "@php artisan key:generate",
-      "@php artisan migrate --force",
       "npm install",
       "npm run build"
     ],
