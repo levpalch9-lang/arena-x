@@ -23,6 +23,7 @@ class TournamentController extends Controller
     {
         $tournament->load(['game', 'organizer', 'matches.teamA', 'matches.teamB', 'matches.winner']);
         $tournament->setRelation('matches', $tournament->matches->sortBy(['round_number', 'match_number'])->values());
+        $acceptedTeams = $tournament->registrations()->with('team')->where('status', 'accepted')->whereNotNull('team_id')->get()->pluck('team')->filter()->unique('id')->values();
         $standings = $acceptedTeams->map(function ($team) use ($tournament) {
             $teamMatches = $tournament->matches->where('status', 'completed')
                 ->filter(fn ($match) => (int) $match->team_a_id === (int) $team->id || (int) $match->team_b_id === (int) $team->id);
@@ -31,7 +32,6 @@ class TournamentController extends Controller
             $against = $teamMatches->sum(fn ($match) => (int) ((int) $match->team_a_id === (int) $team->id ? $match->score_b : $match->score_a));
             return ['team' => $team, 'played' => $teamMatches->count(), 'wins' => $wins, 'losses' => $teamMatches->count() - $wins, 'difference' => $for - $against];
         })->sortBy(fn ($row) => [-$row['wins'], -$row['difference']])->values();
-        $acceptedTeams = $tournament->registrations()->with('team')->where('status', 'accepted')->whereNotNull('team_id')->get()->pluck('team')->filter()->unique('id')->values();
         $registrationCount = $tournament->registrations()->whereIn('status', ['pending', 'accepted'])->count();
         $userRegistration = null;
 
