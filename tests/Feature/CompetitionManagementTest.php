@@ -69,6 +69,29 @@ class CompetitionManagementTest extends TestCase
         ]);
     }
 
+    public function test_organizer_can_schedule_match_between_accepted_teams(): void
+    {
+        $this->actingAs($this->organizer)
+            ->post(route('organizer.matches.store', $this->tournament), [
+                'team_a_id' => $this->teamA->id,
+                'team_b_id' => $this->teamB->id,
+                'round_number' => 1,
+                'match_number' => 2,
+                'map_name' => 'Mirage',
+            ])
+            ->assertRedirect()
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseHas('matches', [
+            'tournament_id' => $this->tournament->id,
+            'team_a_id' => $this->teamA->id,
+            'team_b_id' => $this->teamB->id,
+            'match_number' => 2,
+            'map_name' => 'Mirage',
+            'status' => 'scheduled',
+        ]);
+    }
+
     public function test_match_score_must_not_be_a_draw(): void
     {
         $match = TournamentMatch::create([
