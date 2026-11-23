@@ -96,6 +96,9 @@ class DatabaseSeeder extends Seeder
         Registration::updateOrCreate(['tournament_id' => $open->id, 'team_id' => $team->id], [
             'user_id' => $users['captain@arena.test']->id, 'status' => 'accepted',
         ]);
+        Registration::updateOrCreate(['tournament_id' => $open->id, 'team_id' => $secondTeam->id], [
+            'user_id' => $users['player2@arena.test']->id, 'status' => 'accepted',
+        ]);
         Registration::updateOrCreate(['tournament_id' => $night->id, 'team_id' => $secondTeam->id], [
             'user_id' => $users['player2@arena.test']->id, 'status' => 'pending',
         ]);
