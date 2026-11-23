@@ -69,6 +69,20 @@ class CompetitionManagementTest extends TestCase
         ]);
     }
 
+    public function test_match_winner_advances_to_the_correct_slot_in_the_next_round(): void
+    {
+        $match = TournamentMatch::create(['tournament_id' => $this->tournament->id, 'round_number' => 1, 'match_number' => 1, 'team_a_id' => $this->teamA->id, 'team_b_id' => $this->teamB->id]);
+        $this->actingAs($this->organizer)->patch(route('organizer.matches.score', $match), ['score_a' => 13, 'score_b' => 7])->assertRedirect();
+        $this->assertDatabaseHas('matches', ['tournament_id' => $this->tournament->id, 'round_number' => 2, 'match_number' => 1, 'team_a_id' => $this->teamA->id, 'team_b_id' => null]);
+    }
+
+    public function test_even_match_winner_advances_to_second_slot(): void
+    {
+        $match = TournamentMatch::create(['tournament_id' => $this->tournament->id, 'round_number' => 1, 'match_number' => 2, 'team_a_id' => $this->teamA->id, 'team_b_id' => $this->teamB->id]);
+        $this->actingAs($this->organizer)->patch(route('organizer.matches.score', $match), ['score_a' => 8, 'score_b' => 13])->assertRedirect();
+        $this->assertDatabaseHas('matches', ['tournament_id' => $this->tournament->id, 'round_number' => 2, 'match_number' => 1, 'team_a_id' => null, 'team_b_id' => $this->teamB->id]);
+    }
+
     public function test_organizer_can_schedule_match_between_accepted_teams(): void
     {
         $this->actingAs($this->organizer)
