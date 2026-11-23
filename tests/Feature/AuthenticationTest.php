@@ -27,7 +27,13 @@ class AuthenticationTest extends TestCase
 
     public function test_user_can_log_in_and_log_out(): void
     {
-        $user = User::factory()->create(['password' => bcrypt('SecretPass2026')]);
+        $user = User::create([
+            'name' => 'Existing Player',
+            'nickname' => 'existing_player',
+            'email' => 'existing@example.test',
+            'password' => bcrypt('SecretPass2026'),
+            'role' => 'player',
+        ]);
 
         $this->post('/login', ['email' => $user->email, 'password' => 'SecretPass2026'])
             ->assertRedirect('/dashboard');
