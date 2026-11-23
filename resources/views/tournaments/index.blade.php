@@ -40,7 +40,7 @@
             @forelse($tournaments as $tournament)
                 <article class="card">
                     <div class="top"><span>{{ $tournament->game->short_name ?? $tournament->game->name ?? 'ESPORTS' }}</span><span class="state">{{ $tournament->status === 'published' ? 'Регистрация открыта' : ($tournament->status === 'ongoing' ? 'Идёт турнир' : 'Завершён / закрыт') }}</span></div>
-                    <h2>{{ $tournament->title }}</h2>
+                    <h2><a href="{{ route('tournaments.show', $tournament) }}">{{ $tournament->title }}</a></h2>
                     <p class="desc">{{ $tournament->description ?: 'Подробности турнира скоро появятся.' }}</p>
                     <div class="meta"><span>{{ $tournament->participant_type === 'team' ? 'Командный формат' : 'Индивидуальный формат' }}</span><span>До {{ $tournament->max_participants }} участников</span><span>{{ $tournament->starts_at ? $tournament->starts_at->format('d.m.Y') : 'Дата уточняется' }}</span></div>
                 </article>
