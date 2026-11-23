@@ -124,6 +124,6 @@ class CompetitionManagementTest extends TestCase
         $this->actingAs($this->admin)
             ->from('/admin')
             ->patch(route('admin.users.role', $this->admin), ['role' => 'player'])
-            ->assertSessionHasErrors('role');
+            ->assertStatus(422);
     }
 }
