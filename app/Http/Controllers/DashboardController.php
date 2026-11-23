@@ -13,8 +13,16 @@ class DashboardController extends Controller
     public function __invoke(Request $request): View
     {
         $user = $request->user();
+        $managedQuery = Registration::query()
+            ->with(['tournament', 'user', 'team'])
+            ->where('status', 'pending')
+            ->whereHas('tournament', function ($query) use ($user): void {
+                if (! $user->isAdmin()) {
+                    $query->where('organizer_id', $user->id);
+                }
+            });
 
-        $data = [
+        return view('dashboard', [
             'user' => $user,
             'teamCount' => Team::query()->where('captain_id', $user->id)->count(),
             'registrationCount' => Registration::query()->where('user_id', $user->id)->count(),
@@ -22,11 +30,8 @@ class DashboardController extends Controller
             'managedTournaments' => $user->isOrganizer()
                 ? Tournament::query()->where('organizer_id', $user->id)->latest()->limit(5)->get()
                 : collect(),
-            'pendingRegistrations' => $user->isOrganizer()
-                ? Registration::query()->whereHas('tournament', fn ($query) => $query->where('organizer_id', $user->id))->where('status', 'pending')->count()
-                : 0,
-        ];
-
-        return view('dashboard', $data);
+            'pendingRegistrations' => $user->isOrganizer() ? (clone $managedQuery)->count() : 0,
+            'pendingRegistrationItems' => $user->isOrganizer() ? $managedQuery->latest()->limit(10)->get() : collect(),
+        ]);
     }
 }
