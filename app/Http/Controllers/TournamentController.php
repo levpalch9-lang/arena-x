@@ -22,6 +22,8 @@ class TournamentController extends Controller
     public function show(Tournament $tournament): View
     {
         $tournament->load(['game', 'organizer', 'matches.teamA', 'matches.teamB', 'matches.winner']);
+        $tournament->setRelation('matches', $tournament->matches->sortBy(['round_number', 'match_number'])->values());
+        $acceptedTeams = $tournament->registrations()->with('team')->where('status', 'accepted')->whereNotNull('team_id')->get()->pluck('team')->filter()->unique('id')->values();
         $registrationCount = $tournament->registrations()->whereIn('status', ['pending', 'accepted'])->count();
         $userRegistration = null;
 
@@ -35,6 +37,6 @@ class TournamentController extends Controller
             })->latest()->first();
         }
 
-        return view('tournaments.show', compact('tournament', 'registrationCount', 'userRegistration'));
+        return view('tournaments.show', compact('tournament', 'registrationCount', 'userRegistration', 'acceptedTeams'));
     }
 }
