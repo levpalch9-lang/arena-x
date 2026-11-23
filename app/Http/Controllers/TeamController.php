@@ -38,7 +38,9 @@ class TeamController extends Controller
                 'member_role' => 'captain',
                 'joined_at' => now(),
             ]);
-            if ($request->user()->role === 'player') {\n                $request->user()->update(['role' => 'captain']);\n            }
+            if ($request->user()->role === 'player') {
+                $request->user()->update(['role' => 'captain']);
+            }
 
             return $team;
         });
