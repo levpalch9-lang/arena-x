@@ -1,14 +1,14 @@
 <?php
 
-use App\\Http\\Controllers\\AdminController;
-use App\\Http\\Controllers\\AuthController;
-use App\\Http\\Controllers\\DashboardController;
-use App\\Http\\Controllers\\TeamController;
-use App\\Http\\Controllers\\TournamentController;
-use App\\Http\\Controllers\\TournamentManagementController;
-use App\\Http\\Controllers\\TournamentMatchController;
-use App\\Http\\Controllers\\TournamentRegistrationController;
-use Illuminate\\Support\\Facades\\Route;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TeamController;
+use App\Http\Controllers\TournamentController;
+use App\Http\Controllers\TournamentManagementController;
+use App\Http\Controllers\TournamentMatchController;
+use App\Http\Controllers\TournamentRegistrationController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => view('welcome'))->name('home');
 Route::get('/tournaments', [TournamentController::class, 'index'])->name('tournaments.index');
