@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Создать турнир — ARENA X</title>
+<style>:root{color-scheme:dark;--bg:#101114;--panel:#191b20;--line:#2a2d34;--text:#f4f5f7;--muted:#969ba6;--accent:#d8ff45}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,sans-serif;padding:28px}.shell{max-width:760px;margin:auto}.brand{font-weight:900;letter-spacing:.12em;text-decoration:none;color:white}.brand span{color:var(--accent)}.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:28px;margin-top:28px}h1{font-size:32px;margin:0 0 6px}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}label{display:block;margin:14px 0 6px;font-size:13px}input,select,textarea{width:100%;background:#101114;color:white;border:1px solid #373b44;border-radius:8px;padding:11px;font:inherit}textarea{min-height:85px}.wide{grid-column:1/-1}button{background:var(--accent);color:#15170d;border:0;border-radius:8px;padding:13px 18px;font:inherit;font-weight:850;margin-top:22px;cursor:pointer}.error{color:#ff9696;margin:10px 0}@media(max-width:600px){body{padding:17px}.grid{grid-template-columns:1fr}.wide{grid-column:auto}}</style></head><body><div class="shell"><a class="brand" href="/">ARENA <span>X</span></a><section class="panel"><h1>Создать турнир</h1><p class="muted">Заполни параметры соревнования и опубликуй его в каталоге.</p>@if($errors->any())<p class="error">{{ $errors->first() }}</p>@endif
+<form method="POST" action="{{ route('organizer.tournaments.store') }}">@csrf<div class="grid">
+<div class="wide"><label>Название</label><input name="title" value="{{ old('title') }}" required></div>
+<div><label>Игра</label><select name="game_id" required>@foreach($games as $game)<option value="{{ $game->id }}">{{ $game->name }}</option>@endforeach</select></div>
+<div><label>Формат</label><select name="format"><option value="single_elimination">Single elimination</option><option value="double_elimination">Double elimination</option><option value="round_robin">Round robin</option><option value="swiss">Swiss</option></select></div>
+<div><label>Тип участников</label><select name="participant_type"><option value="team">Команды</option><option value="individual">Игроки</option></select></div>
+<div><label>Размер команды</label><input type="number" name="team_size" value="5" min="1" max="10" required></div>
+<div><label>Максимум участников</label><input type="number" name="max_participants" value="16" min="2" max="256" required></div>
+<div><label>Начало регистрации</label><input type="datetime-local" name="registration_starts_at"></div>
+<div><label>Конец регистрации</label><input type="datetime-local" name="registration_ends_at"></div>
+<div><label>Дата турнира</label><input type="datetime-local" name="starts_at"></div>
+<div><label>Статус</label><select name="status"><option value="draft">Черновик</option><option value="published">Опубликовать</option></select></div>
+<div class="wide"><label>Описание</label><textarea name="description">{{ old('description') }}</textarea></div>
+<div class="wide"><label>Правила</label><textarea name="rules">{{ old('rules') }}</textarea></div>
+</div><button type="submit">Сохранить турнир</button></form></section></div></body></html>
