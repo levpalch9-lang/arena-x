@@ -1,15 +1,15 @@
 <?php
 
-namespace Tests\\Feature;
+namespace Tests\Feature;
 
-use App\\Models\\Game;
-use App\\Models\\Registration;
-use App\\Models\\Team;
-use App\\Models\\Tournament;
-use App\\Models\\TournamentMatch;
-use App\\Models\\User;
-use Illuminate\\Foundation\\Testing\\RefreshDatabase;
-use Tests\\TestCase;
+use App\Models\Game;
+use App\Models\Registration;
+use App\Models\Team;
+use App\Models\Tournament;
+use App\Models\TournamentMatch;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class CompetitionManagementTest extends TestCase
 {
