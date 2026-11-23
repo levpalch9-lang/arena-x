@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Team;
 use App\Models\Tournament;
 use App\Models\TournamentMatch;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\View\View;
 
 class TournamentMatchController extends Controller
 {
@@ -21,7 +20,6 @@ class TournamentMatchController extends Controller
     public function store(Request $request, Tournament $tournament): RedirectResponse
     {
         $this->authorizeTournament($request, $tournament);
-
         $data = $request->validate([
             'team_a_id' => ['required', 'integer', Rule::exists('teams', 'id')],
             'team_b_id' => ['required', 'integer', Rule::exists('teams', 'id'), 'different:team_a_id'],
@@ -30,17 +28,10 @@ class TournamentMatchController extends Controller
             'scheduled_at' => ['nullable', 'date'],
             'map_name' => ['nullable', 'string', 'max:80'],
         ]);
-
-        $acceptedTeamIds = $tournament->registrations()
-            ->where('status', 'accepted')
-            ->whereNotNull('team_id')
-            ->pluck('team_id');
-
+        $acceptedTeamIds = $tournament->registrations()->where('status', 'accepted')->whereNotNull('team_id')->pluck('team_id');
         abort_unless($acceptedTeamIds->contains((int) $data['team_a_id'])
             && $acceptedTeamIds->contains((int) $data['team_b_id']), 422, 'В матче могут участвовать только команды с принятой заявкой.');
-
         TournamentMatch::create($data + ['tournament_id' => $tournament->id, 'status' => 'scheduled']);
-
         return back()->with('success', 'Матч добавлен в расписание.');
     }
 
@@ -48,22 +39,44 @@ class TournamentMatchController extends Controller
     {
         $match->load('tournament');
         $this->authorizeTournament($request, $match->tournament);
-
         $data = $request->validate([
             'score_a' => ['required', 'integer', 'min:0', 'max:99'],
             'score_b' => ['required', 'integer', 'min:0', 'max:99', 'different:score_a'],
             'scheduled_at' => ['nullable', 'date'],
             'map_name' => ['nullable', 'string', 'max:80'],
         ]);
-
-        $winnerId = (int) $data['score_a'] > (int) $data['score_b']
-            ? $match->team_a_id
-            : $match->team_b_id;
-
         abort_unless($match->team_a_id && $match->team_b_id, 422, 'Сначала назначьте обе команды.');
+        $winnerId = (int) $data['score_a'] > (int) $data['score_b'] ? $match->team_a_id : $match->team_b_id;
 
-        $match->update($data + ['winner_team_id' => $winnerId, 'status' => 'completed']);
+        DB::transaction(function () use ($match, $data, $winnerId): void {
+            $lockedMatch = TournamentMatch::query()->lockForUpdate()->findOrFail($match->id);
+            $previousWinnerId = $lockedMatch->winner_team_id;
+            if ($lockedMatch->round_number < 32) {
+                $nextRound = $lockedMatch->round_number + 1;
+                $nextMatchNumber = (int) ceil($lockedMatch->match_number / 2);
+                $slot = $lockedMatch->match_number % 2 === 1 ? 'team_a_id' : 'team_b_id';
+                $nextMatch = TournamentMatch::query()->where('tournament_id', $lockedMatch->tournament_id)
+                    ->where('round_number', $nextRound)->where('match_number', $nextMatchNumber)
+                    ->lockForUpdate()->first();
 
-        return back()->with('success', 'Результат матча сохранён, победитель определён автоматически.');
+                if ($nextMatch && $nextMatch->{$slot} !== null
+                    && (int) $nextMatch->{$slot} !== (int) $winnerId
+                    && (int) $nextMatch->{$slot} !== (int) $previousWinnerId) {
+                    abort(422, 'Место победителя в следующем раунде уже занято другой командой.');
+                }
+                if (! $nextMatch) {
+                    $nextMatch = new TournamentMatch([
+                        'tournament_id' => $lockedMatch->tournament_id,
+                        'round_number' => $nextRound,
+                        'match_number' => $nextMatchNumber,
+                        'status' => 'scheduled',
+                    ]);
+                }
+                $nextMatch->{$slot} = $winnerId;
+                $nextMatch->save();
+            }
+            $lockedMatch->update($data + ['winner_team_id' => $winnerId, 'status' => 'completed']);
+        });
+        return back()->with('success', 'Результат сохранён. Победитель автоматически переведён в следующий раунд.');
     }
 }
