@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
             ['organizer@arena.test', 'organizer', 'Организатор ARENA', 'organizer'],
             ['captain@arena.test', 'vortex_ig', 'Vortex Captain', 'captain'],
             ['player@arena.test', 'entryfrag', 'Entry Frag', 'player'],
-            ['player2@arena.test', 'smoke_main', 'Smoke Main', 'player'],
+            ['player2@arena.test', 'smoke_main', 'Smoke Main', 'captain'],
         ] as [$email, $nickname, $name, $role]) {
             $users[$email] = User::updateOrCreate(
                 ['email' => $email],
