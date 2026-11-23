@@ -3,11 +3,12 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TournamentController;
+use App\Http\Controllers\TournamentRegistrationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => view('welcome'))->name('home');
-
 Route::get('/tournaments', [TournamentController::class, 'index'])->name('tournaments.index');
+Route::get('/tournaments/{tournament:slug}', [TournamentController::class, 'show'])->name('tournaments.show');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
@@ -19,4 +20,6 @@ Route::middleware('guest')->group(function (): void {
 Route::middleware('auth')->group(function (): void {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('/tournaments/{tournament:slug}/register', [TournamentRegistrationController::class, 'store'])->name('tournaments.register');
+    Route::patch('/organizer/registrations/{registration}', [TournamentRegistrationController::class, 'review'])->name('organizer.registrations.review');
 });
