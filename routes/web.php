@@ -18,7 +18,7 @@ Route::middleware('guest')->group(function (): void {
 });
 
 Route::middleware('auth')->group(function (): void {
-    Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');\n    Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');\n    Route::get('/teams/create', [TeamController::class, 'create'])->name('teams.create');\n    Route::post('/teams', [TeamController::class, 'store'])->name('teams.store');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::post('/tournaments/{tournament:slug}/register', [TournamentRegistrationController::class, 'store'])->name('tournaments.register');
     Route::patch('/organizer/registrations/{registration}', [TournamentRegistrationController::class, 'review'])->name('organizer.registrations.review');
