@@ -1,14 +1,14 @@
 <?php
 
-namespace App\\Http\\Controllers;
+namespace App\Http\Controllers;
 
-use App\\Models\\Team;
-use App\\Models\\Tournament;
-use App\\Models\\TournamentMatch;
-use Illuminate\\Http\\RedirectResponse;
-use Illuminate\\Http\\Request;
-use Illuminate\\Validation\\Rule;
-use Illuminate\\View\\View;
+use App\Models\Team;
+use App\Models\Tournament;
+use App\Models\TournamentMatch;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class TournamentMatchController extends Controller
 {
