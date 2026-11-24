@@ -21,6 +21,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: Validate deployment script
+        run: bash -n scripts/connect-supabase.sh
       - name: Validate Composer manifest
         run: composer validate --no-check-publish
       - name: Install PHP dependencies
