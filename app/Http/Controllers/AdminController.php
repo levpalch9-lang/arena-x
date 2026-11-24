@@ -23,6 +23,7 @@ class AdminController extends Controller
             'pendingCount' => Registration::where('status', 'pending')->count(),
             'users' => User::latest()->limit(12)->get(),
             'tournaments' => Tournament::with('game')->latest()->limit(8)->get(),
+            'pendingRegistrations' => Registration::with(['tournament', 'team', 'user'])->where('status', 'pending')->latest()->limit(20)->get(),
             'gamesCount' => Game::count(),
         ]);
     }
