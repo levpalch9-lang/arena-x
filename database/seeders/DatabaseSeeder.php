@@ -172,7 +172,7 @@ class DatabaseSeeder extends Seeder
         ] as [$tournament, $teamRow, $user, $status]) {
             Registration::updateOrCreate(
                 ['tournament_id' => $tournament->id, 'team_id' => $teamRow->id],
-                ['user_id' => $user->id, 'status' => $status]
+                ['user_id' => null, 'status' => $status]
             );
         }
 
