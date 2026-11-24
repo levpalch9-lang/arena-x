@@ -25,9 +25,9 @@ class TournamentController extends Controller
 
         $query->when($filters['q'] ?? null, function ($builder, $search): void {
             $builder->where(function ($where) use ($search): void {
-                $where->where('title', 'ilike', '%'.$search.'%')
-                    ->orWhere('description', 'ilike', '%'.$search.'%')
-                    ->orWhereHas('game', fn ($game) => $game->where('name', 'ilike', '%'.$search.'%'));
+                $where->where('title', 'like', '%'.$search.'%')
+                    ->orWhere('description', 'like', '%'.$search.'%')
+                    ->orWhereHas('game', fn ($game) => $game->where('name', 'like', '%'.$search.'%'));
             });
         });
 
