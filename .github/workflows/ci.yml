@@ -22,7 +22,9 @@ jobs:
         with:
           node-version: '20'
       - name: Validate deployment script
-        run: bash -n scripts/connect-supabase.sh
+        run: |
+          bash -n scripts/connect-supabase.sh
+          sed -n '/^<?php$/,/^PHP$/p' scripts/connect-supabase.sh | sed '$d' | php -l
       - name: Validate Composer manifest
         run: composer validate --no-check-publish
       - name: Install PHP dependencies
