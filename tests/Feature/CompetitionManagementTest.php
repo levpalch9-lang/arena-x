@@ -414,4 +414,49 @@ class CompetitionManagementTest extends TestCase
         $this->assertSame(1, Notification::where('user_id', $this->captain->id)->whereNull('read_at')->count());
     }
 
+
+    public function test_organizer_can_update_scheduled_match_time_and_map(): void
+    {
+        $match = TournamentMatch::create([
+            'tournament_id' => $this->tournament->id,
+            'team_a_id' => $this->teamA->id,
+            'team_b_id' => $this->teamB->id,
+            'status' => 'scheduled',
+        ]);
+
+        $this->actingAs($this->organizer)
+            ->patch(route('organizer.matches.schedule', $match), [
+                'scheduled_at' => '2026-12-01T18:30',
+                'map_name' => 'Mirage',
+            ])
+            ->assertRedirect()
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseHas('matches', [
+            'id' => $match->id,
+            'map_name' => 'Mirage',
+            'status' => 'scheduled',
+        ]);
+        $this->assertNotNull($match->fresh()->scheduled_at);
+    }
+
+    public function test_completed_match_schedule_cannot_be_changed(): void
+    {
+        $match = TournamentMatch::create([
+            'tournament_id' => $this->tournament->id,
+            'team_a_id' => $this->teamA->id,
+            'team_b_id' => $this->teamB->id,
+            'score_a' => 13,
+            'score_b' => 8,
+            'winner_team_id' => $this->teamA->id,
+            'status' => 'completed',
+        ]);
+
+        $this->actingAs($this->organizer)
+            ->patch(route('organizer.matches.schedule', $match), ['map_name' => 'Dust 2'])
+            ->assertStatus(422);
+
+        $this->assertDatabaseMissing('matches', ['id' => $match->id, 'map_name' => 'Dust 2']);
+    }
+
 }
