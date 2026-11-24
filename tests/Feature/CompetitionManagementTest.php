@@ -278,4 +278,88 @@ class CompetitionManagementTest extends TestCase
             ->patch(route('admin.users.role', $this->admin), ['role' => 'player'])
             ->assertStatus(422);
     }
+
+    public function test_organizer_can_publish_and_close_tournament_registration(): void
+    {
+        $draft = Tournament::create([
+            'game_id' => $this->tournament->game_id,
+            'organizer_id' => $this->organizer->id,
+            'title' => 'Draft Cup',
+            'slug' => 'draft-cup',
+            'status' => 'draft',
+        ]);
+
+        $this->actingAs($this->organizer)
+            ->patch(route('organizer.tournaments.status', $draft), ['status' => 'published'])
+            ->assertRedirect()
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseHas('tournaments', ['id' => $draft->id, 'status' => 'published']);
+
+        $this->actingAs($this->organizer)
+            ->patch(route('organizer.tournaments.status', $draft), ['status' => 'registration_closed'])
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('tournaments', ['id' => $draft->id, 'status' => 'registration_closed']);
+    }
+
+    public function test_tournament_cannot_start_without_two_accepted_participants(): void
+    {
+        $this->tournament->registrations()->delete();
+        $this->actingAs($this->organizer)
+            ->from('/tournaments/'.$this->tournament->slug)
+            ->patch(route('organizer.tournaments.status', $this->tournament), ['status' => 'ongoing'])
+            ->assertStatus(422);
+
+        $this->assertDatabaseHas('tournaments', ['id' => $this->tournament->id, 'status' => 'published']);
+    }
+
+    public function test_tournament_can_start_after_two_teams_are_accepted(): void
+    {
+        $this->actingAs($this->organizer)
+            ->patch(route('organizer.tournaments.status', $this->tournament), ['status' => 'ongoing'])
+            ->assertRedirect()
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseHas('tournaments', ['id' => $this->tournament->id, 'status' => 'ongoing']);
+    }
+
+    public function test_tournament_cannot_be_completed_while_matches_are_unfinished(): void
+    {
+        TournamentMatch::create([
+            'tournament_id' => $this->tournament->id,
+            'team_a_id' => $this->teamA->id,
+            'team_b_id' => $this->teamB->id,
+            'status' => 'scheduled',
+        ]);
+
+        $this->actingAs($this->organizer)
+            ->from('/tournaments/'.$this->tournament->slug)
+            ->patch(route('organizer.tournaments.status', $this->tournament), ['status' => 'completed'])
+            ->assertStatus(422);
+
+        $this->assertDatabaseHas('tournaments', ['id' => $this->tournament->id, 'status' => 'published']);
+    }
+
+    public function test_only_tournament_owner_or_admin_can_change_tournament_status(): void
+    {
+        $otherOrganizer = User::create([
+            'name' => 'Other Organizer',
+            'nickname' => 'other_status_owner',
+            'email' => 'otherstatus@test.local',
+            'password' => bcrypt('SecretPass2026'),
+            'role' => 'organizer',
+        ]);
+
+        $this->actingAs($otherOrganizer)
+            ->patch(route('organizer.tournaments.status', $this->tournament), ['status' => 'registration_closed'])
+            ->assertForbidden();
+
+        $this->actingAs($this->player)
+            ->patch(route('organizer.tournaments.status', $this->tournament), ['status' => 'registration_closed'])
+            ->assertForbidden();
+
+        $this->assertDatabaseHas('tournaments', ['id' => $this->tournament->id, 'status' => 'published']);
+    }
+
 }
