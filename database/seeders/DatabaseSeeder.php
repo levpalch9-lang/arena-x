@@ -76,7 +76,7 @@ class DatabaseSeeder extends Seeder
             );
         }
 
-        $open = Tournament::updateOrCreate(['slug' => 'arena-open-01'], [
+        $open = Tournament::updateOrCreate(['slug' => 'arena-open-01-cs2'], [
             'game_id' => $cs2->id,
             'organizer_id' => $users['organizer@arena.test']->id,
             'title' => 'ARENA OPEN #01',
@@ -91,7 +91,7 @@ class DatabaseSeeder extends Seeder
             'starts_at' => now()->subDays(7),
             'status' => 'completed',
         ]);
-        $night = Tournament::updateOrCreate(['slug' => 'night-cup'], [
+        $night = Tournament::updateOrCreate(['slug' => 'night-cup-cs2'], [
             'game_id' => $cs2->id,
             'organizer_id' => $users['organizer@arena.test']->id,
             'title' => 'NIGHT CUP',
