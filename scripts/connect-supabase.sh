@@ -18,10 +18,10 @@ php <<'PHP'
 $path = getcwd().'/.env';
 $contents = file_get_contents($path);
 $password = getenv('ARENA_SUPABASE_DB_PASSWORD');
+$contents = preg_replace('/^DB_URL=.*\\R?/m', '', $contents);
 
 $values = [
     'DB_CONNECTION' => 'pgsql',
-    'DB_URL' => '',
     'DB_HOST' => 'db.xqulqprxhrnrhgpwkebf.supabase.co',
     'DB_PORT' => '5432',
     'DB_DATABASE' => 'postgres',
