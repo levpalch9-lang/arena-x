@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/organizer/tournaments', [TournamentManagementController::class, 'store'])->middleware('role:admin,organizer')->name('organizer.tournaments.store');
     Route::patch('/organizer/tournaments/{tournament:slug}/status', [TournamentManagementController::class, 'changeStatus'])->middleware('role:admin,organizer')->name('organizer.tournaments.status');
     Route::post('/organizer/tournaments/{tournament:slug}/matches', [TournamentMatchController::class, 'store'])->middleware('role:admin,organizer')->name('organizer.matches.store');
+    Route::patch('/organizer/matches/{match}/schedule', [TournamentMatchController::class, 'updateSchedule'])->middleware('role:admin,organizer')->name('organizer.matches.schedule');
     Route::patch('/organizer/matches/{match}/score', [TournamentMatchController::class, 'updateScore'])->middleware('role:admin,organizer')->name('organizer.matches.score');
 
     Route::get('/admin', AdminController::class)->middleware('role:admin')->name('admin.index');
