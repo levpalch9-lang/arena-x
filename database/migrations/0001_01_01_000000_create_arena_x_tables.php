@@ -8,6 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
+        $hasExistingSchema = Schema::hasTable('users') || Schema::hasTable('games') || Schema::hasTable('tournaments');
+
+        if (! $hasExistingSchema && ! Schema::hasTable('arena_x_schema_created_by_laravel')) {
+            Schema::create('arena_x_schema_created_by_laravel', function (Blueprint $table): void {
+                $table->id();
+            });
+        }
+
         if (! Schema::hasTable('users')) {
             Schema::create('users', function (Blueprint $table): void {
                 $table->id();
@@ -136,6 +144,11 @@ return new class extends Migration
 
     public function down(): void
     {
+        // Never drop a pre-existing Supabase schema when Laravel rolls back its baseline migration.
+        if (! Schema::hasTable('arena_x_schema_created_by_laravel')) {
+            return;
+        }
+
         Schema::dropIfExists('notifications');
         Schema::dropIfExists('matches');
         Schema::dropIfExists('registrations');
@@ -146,5 +159,6 @@ return new class extends Migration
         Schema::dropIfExists('sessions');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('users');
+        Schema::dropIfExists('arena_x_schema_created_by_laravel');
     }
 };
