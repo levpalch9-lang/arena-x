@@ -32,7 +32,7 @@
 </tbody></table></div></section>
 <section class="panel" id="moderation"><div class="panel-head"><h2>Заявки на модерации</h2><span>{{ $pendingCount }} ожидают</span></div>
 @forelse($pendingRegistrations as $application)
-<div class="row"><span><strong>{{ $application->team->name ?? $application->user->nickname ?? 'Участник' }}</strong><small>{{ $application->tournament->title }} · {{ $application->created_at->format('d.m.Y H:i') }}</small></span><span class="actions"><form method="POST" action="{{ route('organizer.registrations.review', $application) }}">@csrf @method('PATCH')<input type="hidden" name="status" value="accepted"><button class="action accept" type="submit">Одобрить</button></form><form method="POST" action="{{ route('organizer.registrations.review', $application) }}">@csrf @method('PATCH')<input type="hidden" name="status" value="rejected"><button class="action" type="submit">Отклонить</button></form></span></div>
+<div class="row"><span><strong>{{ $application->team->name ?? $application->user->nickname ?? 'Участник' }}</strong><small>{{ $application->tournament->title }} · {{ $application->created_at->format('d.m.Y H:i') }}</small></span><span class="actions"><form method="POST" action="{{ route('organizer.registrations.review', $application) }}">@csrf @method('PATCH')<input type="hidden" name="status" value="accepted"><button class="action accept" type="submit">Принять</button></form><form method="POST" action="{{ route('organizer.registrations.review', $application) }}">@csrf @method('PATCH')<input type="hidden" name="status" value="rejected"><button class="action" type="submit">Отклонить</button></form></span></div>
 @empty<div class="empty">Новых заявок нет. Очередь модерации пуста.</div>@endforelse
 </section>
 </div>
