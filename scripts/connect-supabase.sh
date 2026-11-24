@@ -22,10 +22,10 @@ $contents = preg_replace('/^DB_URL=.*\\R?/m', '', $contents);
 
 $values = [
     'DB_CONNECTION' => 'pgsql',
-    'DB_HOST' => 'db.xqulqprxhrnrhgpwkebf.supabase.co',
+    'DB_HOST' => 'aws-0-eu-central-1.pooler.supabase.com',
     'DB_PORT' => '5432',
     'DB_DATABASE' => 'postgres',
-    'DB_USERNAME' => 'postgres',
+    'DB_USERNAME' => 'postgres.xqulqprxhrnrhgpwkebf',
     'DB_PASSWORD' => $password,
     'DB_SCHEMA' => 'public',
     'DB_SSLMODE' => 'require',
