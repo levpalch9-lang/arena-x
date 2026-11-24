@@ -51,9 +51,10 @@ unset ARENA_SUPABASE_DB_PASSWORD
 if ! grep -q '^APP_KEY=base64:' .env; then
     php artisan key:generate
 fi
-php artisan config:clear
+php artisan optimize:clear
 php artisan migrate --force
 php artisan db:seed --force
+npm run build
 php artisan db:show --database=pgsql
 
 printf "\nARENA X подключён к Supabase PostgreSQL. Пароль сохранён только в локальном .env.\n"
