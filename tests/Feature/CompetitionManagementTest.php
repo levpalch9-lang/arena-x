@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Game;
+use App\Models\Notification;
 use App\Models\Registration;
 use App\Models\Team;
 use App\Models\Tournament;
@@ -365,7 +366,7 @@ class CompetitionManagementTest extends TestCase
 
     public function test_user_can_view_and_mark_their_notifications_as_read(): void
     {
-        $notification = \\App\\Models\\Notification::create([
+        $notification = Notification::create([
             'user_id' => $this->player->id,
             'title' => 'Заявка одобрена',
             'body' => 'Твоя заявка принята.',
@@ -386,7 +387,7 @@ class CompetitionManagementTest extends TestCase
 
     public function test_user_cannot_mark_another_users_notification_as_read(): void
     {
-        $notification = \\App\\Models\\Notification::create([
+        $notification = Notification::create([
             'user_id' => $this->captain->id,
             'title' => 'Личное уведомление',
             'body' => 'Не для другого пользователя.',
@@ -401,16 +402,16 @@ class CompetitionManagementTest extends TestCase
 
     public function test_user_can_mark_all_their_notifications_as_read(): void
     {
-        \\App\\Models\\Notification::create(['user_id' => $this->player->id, 'title' => 'Первое', 'body' => 'Текст']);
-        \\App\\Models\\Notification::create(['user_id' => $this->player->id, 'title' => 'Второе', 'body' => 'Текст']);
-        \\App\\Models\\Notification::create(['user_id' => $this->captain->id, 'title' => 'Чужое', 'body' => 'Текст']);
+        Notification::create(['user_id' => $this->player->id, 'title' => 'Первое', 'body' => 'Текст']);
+        Notification::create(['user_id' => $this->player->id, 'title' => 'Второе', 'body' => 'Текст']);
+        Notification::create(['user_id' => $this->captain->id, 'title' => 'Чужое', 'body' => 'Текст']);
 
         $this->actingAs($this->player)
             ->patch(route('notifications.read-all'))
             ->assertRedirect();
 
-        $this->assertSame(0, \\App\\Models\\Notification::where('user_id', $this->player->id)->whereNull('read_at')->count());
-        $this->assertSame(1, \\App\\Models\\Notification::where('user_id', $this->captain->id)->whereNull('read_at')->count());
+        $this->assertSame(0, Notification::where('user_id', $this->player->id)->whereNull('read_at')->count());
+        $this->assertSame(1, Notification::where('user_id', $this->captain->id)->whereNull('read_at')->count());
     }
 
 }
