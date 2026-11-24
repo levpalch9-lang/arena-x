@@ -13,7 +13,7 @@
 <div class="side-bottom"><a class="side-link" href="{{ route('dashboard') }}">Личный кабинет</a><a class="side-link" href="{{ route('home') }}">Открыть главную</a></div>
 </aside>
 <div class="main">
-<header class="topbar"><span>ARENA X / CONTROL CENTER</span><div class="top-actions"><span>Администратор · {{ auth()->user()->nickname }}</span><span class="avatar">{{ mb_strtoupper(mb_substr(auth()->user()->nickname,0,1)) }}</span><form method="POST" action="{{ route('logout') }}">@csrf<button class="logout" type="submit">Выйти</button></form></div></header>
+<header class="topbar"><span>ARENA X / CONTROL CENTER</span><div class="top-actions"><a href="{{ route('profile.edit') }}">Профиль</a><span>Администратор · {{ auth()->user()->nickname }}</span><span class="avatar">{{ mb_strtoupper(mb_substr(auth()->user()->nickname,0,1)) }}</span><form method="POST" action="{{ route('logout') }}">@csrf<button class="logout" type="submit">Выйти</button></form></div></header>
 <main class="content">
 <section class="heading"><div class="eyebrow">SYSTEM OVERVIEW / 01</div><h1>Панель управления</h1><p>Контроль пользователей, турниров, заявок и матчей платформы.</p></section>
 @if(session('success'))<div class="notice">{{ session('success') }}</div>@endif
