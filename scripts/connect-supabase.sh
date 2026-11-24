@@ -32,7 +32,49 @@ $values = [
 ];
 
 foreach ($values as $key => $value) {
-    $escaped = addcslashes((string) $value, "\\\"\n\r");
+    $escaped = str_replace('
+    $line = $key.'="'.$escaped.'"';
+    $pattern = '/^'.preg_quote($key, '/').'=.*/m';
+
+    if (preg_match($pattern, $contents)) {
+        $contents = preg_replace($pattern, $line, $contents);
+    } else {
+        $contents .= "\n".$line;
+    }
+}
+
+file_put_contents($path, rtrim($contents)."\n");
+PHP
+
+unset ARENA_SUPABASE_DB_PASSWORD
+php artisan config:clear
+php artisan migrate --force
+php artisan db:seed --force
+php artisan db:show --database=pgsql
+
+printf "\nARENA X подключён к Supabase PostgreSQL. Пароль сохранён только в локальном .env.\n"
+, '\\
+    $line = $key.'="'.$escaped.'"';
+    $pattern = '/^'.preg_quote($key, '/').'=.*/m';
+
+    if (preg_match($pattern, $contents)) {
+        $contents = preg_replace($pattern, $line, $contents);
+    } else {
+        $contents .= "\n".$line;
+    }
+}
+
+file_put_contents($path, rtrim($contents)."\n");
+PHP
+
+unset ARENA_SUPABASE_DB_PASSWORD
+php artisan config:clear
+php artisan migrate --force
+php artisan db:seed --force
+php artisan db:show --database=pgsql
+
+printf "\nARENA X подключён к Supabase PostgreSQL. Пароль сохранён только в локальном .env.\n"
+, addcslashes((string) $value, "\\\"\n\r"));
     $line = $key.'="'.$escaped.'"';
     $pattern = '/^'.preg_quote($key, '/').'=.*/m';
 
