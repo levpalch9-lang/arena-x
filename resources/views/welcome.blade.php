@@ -50,7 +50,7 @@
     <header>
         <a class="brand" href="/">ARENA <span>X</span></a>
         <nav aria-label="Основная навигация"><a href="/tournaments">Турниры</a><a href="#about">О платформе</a><a href="#format">Как играть</a></nav>
-        <a class="nav-action" href="/tournaments">Открыть турниры ↗</a>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">@auth<a class="nav-action" href="{{ route('dashboard') }}">Личный кабинет</a><form method="POST" action="{{ route('logout') }}" style="margin:0">@csrf<button class="nav-action" type="submit" style="background:transparent;color:inherit;cursor:pointer">Выйти</button></form>@else<a class="nav-action" href="{{ route('login') }}">Войти</a><a class="button" href="{{ route('register') }}" style="padding:10px 14px">Регистрация</a>@endauth</div>
     </header>
     <main>
         <section class="hero" id="about">
@@ -58,7 +58,7 @@
                 <div class="eyebrow">Твоя игра. Твоя команда. Твой результат.</div>
                 <h1>Время выйти<br>на арену.</h1>
                 <p class="lead">Платформа локальных киберспортивных турниров. Собирай команду, подавай заявку и доказывай своё мастерство.</p>
-                <div class="actions"><a class="button" href="/tournaments">Смотреть турниры&nbsp; ↗</a><a class="button secondary" href="#format">Как это работает</a></div>
+                <div class="actions"><a class="button" href="{{ route('tournaments.index') }}">Смотреть турниры&nbsp; ↗</a>@guest<a class="button secondary" href="{{ route('register') }}">Создать аккаунт</a>@else<a class="button secondary" href="{{ route('dashboard') }}">Перейти в кабинет</a>@endguest</div>
             </div>
             <aside class="visual" aria-label="Киберспортивная арена">
                 <div class="visual-top"><span>ARENA X / 2026</span><span class="online">ONLINE</span></div>
