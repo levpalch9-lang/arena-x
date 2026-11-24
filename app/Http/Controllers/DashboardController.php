@@ -27,6 +27,9 @@ class DashboardController extends Controller
             'user' => $user,
             'teamCount' => Team::query()->where('captain_id', $user->id)->count(),
             'registrationCount' => Registration::query()->where('user_id', $user->id)->count(),
+            'myRegistrations' => Registration::query()->with('tournament')->where('user_id', $user->id)->latest()->limit(8)->get(),
+            'notifications' => $user->notifications()->latest()->limit(8)->get(),
+            'unreadNotifications' => $user->notifications()->whereNull('read_at')->count(),
             'tournamentCount' => Tournament::query()->whereIn('status', ['published', 'ongoing'])->count(),
             'managedTournaments' => $user->isOrganizer()
                 ? Tournament::query()->where('organizer_id', $user->id)->latest()->limit(5)->get()
