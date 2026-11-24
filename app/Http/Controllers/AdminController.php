@@ -6,6 +6,7 @@ use App\Models\Game;
 use App\Models\Registration;
 use App\Models\Team;
 use App\Models\Tournament;
+use App\Models\TournamentMatch;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,6 +21,7 @@ class AdminController extends Controller
             'usersCount' => User::count(),
             'teamsCount' => Team::count(),
             'tournamentsCount' => Tournament::count(),
+            'matchesCount' => TournamentMatch::count(),
             'pendingCount' => Registration::where('status', 'pending')->count(),
             'users' => User::latest()->limit(12)->get(),
             'tournaments' => Tournament::with('game')->latest()->limit(8)->get(),
