@@ -2,21 +2,54 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Game;
 use App\Models\Tournament;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class TournamentController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $tournaments = Tournament::query()
-            ->with('game')
-            ->whereIn('status', ['published', 'registration_closed', 'ongoing', 'completed'])
-            ->orderByRaw("CASE WHEN status = 'published' THEN 0 WHEN status = 'ongoing' THEN 1 ELSE 2 END")
-            ->orderBy('starts_at')
-            ->get();
+        $filters = $request->validate([
+            'q' => ['nullable', 'string', 'max:100'],
+            'game' => ['nullable', 'string', 'max:80'],
+            'status' => ['nullable', 'in:published,registration_closed,ongoing,completed'],
+            'date' => ['nullable', 'in:upcoming,past'],
+        ]);
 
-        return view('tournaments.index', ['tournaments' => $tournaments, 'demoMode' => false]);
+        $query = Tournament::query()
+            ->with('game')
+            ->withCount(['registrations as participants_count' => fn ($registrations) => $registrations->whereIn('status', ['pending', 'accepted'])])
+            ->whereIn('status', ['published', 'registration_closed', 'ongoing', 'completed']);
+
+        $query->when($filters['q'] ?? null, function ($builder, $search): void {
+            $builder->where(function ($where) use ($search): void {
+                $where->where('title', 'ilike', '%'.$search.'%')
+                    ->orWhere('description', 'ilike', '%'.$search.'%')
+                    ->orWhereHas('game', fn ($game) => $game->where('name', 'ilike', '%'.$search.'%'));
+            });
+        });
+
+        $query->when($filters['game'] ?? null, fn ($builder, $game) => $builder->whereHas('game', fn ($games) => $games->where('slug', $game)));
+        $query->when($filters['status'] ?? null, fn ($builder, $status) => $builder->where('status', $status));
+        $query->when(($filters['date'] ?? null) === 'upcoming', fn ($builder) => $builder->where(function ($where): void {
+            $where->whereNull('starts_at')->orWhere('starts_at', '>=', now());
+        }));
+        $query->when(($filters['date'] ?? null) === 'past', fn ($builder) => $builder->where('starts_at', '<', now()));
+
+        $tournaments = $query
+            ->orderByRaw("CASE WHEN status = 'ongoing' THEN 0 WHEN status = 'published' THEN 1 WHEN status = 'registration_closed' THEN 2 ELSE 3 END")
+            ->orderBy('starts_at')
+            ->paginate(9)
+            ->withQueryString();
+
+        return view('tournaments.index', [
+            'tournaments' => $tournaments,
+            'games' => Game::query()->where('is_active', true)->orderBy('name')->get(),
+            'filters' => $filters,
+            'demoMode' => false,
+        ]);
     }
 
     public function show(Tournament $tournament): View
