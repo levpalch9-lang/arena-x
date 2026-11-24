@@ -8,6 +8,18 @@ body{background-image:radial-gradient(ellipse at 85% 4%,#d8ff4510,transparent 34
 </style></head><body><div class="shell"><header><a class="brand" href="/">ARENA <span>X</span></a><form method="POST" action="{{ route('logout') }}">@csrf<button class="logout" type="submit">Выйти</button></form></header>
 <main><section class="intro"><div class="eyebrow">ЛИЧНЫЙ КАБИНЕТ</div><h1>Привет, {{ $user->nickname }}.</h1><p class="muted">Управляй участием в соревнованиях и следи за результатами.</p><span class="role">{{ ['admin'=>'Администратор','organizer'=>'Организатор','captain'=>'Капитан','player'=>'Игрок'][$user->role] ?? 'Участник' }}</span>@if(session('success'))<p class="success">{{ session('success') }}</p>@endif</section>
 <section class="stats"><article class="stat"><strong>{{ $tournamentCount }}</strong><span>Активные турниры</span></article><article class="stat"><strong>{{ $registrationCount }}</strong><span>Мои заявки</span></article><article class="stat"><strong>{{ $teamCount }}</strong><span>Команды под управлением</span></article></section>
+<section class="block"><h2>Мои заявки</h2>
+@forelse($myRegistrations as $application)
+<div class="item"><span><strong>{{ $application->tournament->title }}</strong><br><span class="muted">{{ ['pending'=>'На рассмотрении','accepted'=>'Принята','rejected'=>'Отклонена','withdrawn'=>'Отозвана'][$application->status] ?? $application->status }}</span></span><a class="muted" href="{{ route('tournaments.show', $application->tournament) }}">Открыть →</a></div>
+@empty<p class="muted">Ты пока не подавал заявки. Выбери турнир в каталоге.</p>@endforelse
+</section>
+<section class="block"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2>Уведомления <span class="role">{{ $unreadNotifications }} новых</span></h2>@if($unreadNotifications > 0)<form method="POST" action="{{ route('notifications.read-all') }}">@csrf @method('PATCH')<button class="logout" type="submit">Прочитать все</button></form>@endif</div>
+@forelse($notifications as $notification)
+<div class="item"><span><strong>{{ $notification->title }}</strong><br><span class="muted">{{ $notification->body }}</span><br><small class="muted">{{ $notification->created_at->format('d.m.Y H:i') }} · {{ $notification->read_at ? 'Прочитано' : 'Новое' }}</small></span>
+@if(!$notification->read_at)<form method="POST" action="{{ route('notifications.read', $notification) }}">@csrf @method('PATCH')<button class="logout" type="submit">Прочитано</button></form>@endif
+</div>
+@empty<p class="muted">Пока нет уведомлений.</p>@endforelse
+</section>
 <section class="block"><h2>Быстрые действия</h2>@if($user->isOrganizer())<div class="items"><a class="item" href="{{ route('organizer.tournaments.create') }}"><span>Создать турнир</span><span class="muted">Открыть →</span></a></div>@endif
 @if($user->isAdmin())<div class="items"><a class="item" href="{{ route('admin.index') }}"><span>Панель администратора</span><span class="muted">Открыть →</span></a></div>@endif
 <div class="items"><a class="item" href="{{ route('teams.index') }}"><span>Мои команды</span><span class="muted">Управление →</span></a><a class="item" href="{{ route('tournaments.index') }}"><span>Каталог турниров</span><span class="muted">Открыть →</span></a><a class="item" href="{{ route('home') }}"><span>Главная страница</span><span class="muted">Открыть →</span></a></div></section>
