@@ -48,6 +48,9 @@ file_put_contents($path, rtrim($contents)."\n");
 PHP
 
 unset ARENA_SUPABASE_DB_PASSWORD
+if ! grep -q '^APP_KEY=base64:' .env; then
+    php artisan key:generate
+fi
 php artisan config:clear
 php artisan migrate --force
 php artisan db:seed --force
