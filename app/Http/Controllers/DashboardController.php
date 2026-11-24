@@ -6,21 +6,25 @@ use App\Models\Registration;
 use App\Models\Team;
 use App\Models\Tournament;
 use App\Models\TournamentMatch;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function __invoke(Request $request): View
+    public function __invoke(Request $request): View|RedirectResponse
     {
         $user = $request->user();
+
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.index');
+        }
+
         $managedQuery = Registration::query()
             ->with(['tournament', 'user', 'team'])
             ->where('status', 'pending')
             ->whereHas('tournament', function ($query) use ($user): void {
-                if (! $user->isAdmin()) {
-                    $query->where('organizer_id', $user->id);
-                }
+                $query->where('organizer_id', $user->id);
             });
 
         return view('dashboard', [
