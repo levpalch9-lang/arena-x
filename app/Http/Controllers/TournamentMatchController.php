@@ -35,6 +35,22 @@ class TournamentMatchController extends Controller
         return back()->with('success', 'Матч добавлен в расписание.');
     }
 
+    public function updateSchedule(Request $request, TournamentMatch $match): RedirectResponse
+    {
+        $match->load('tournament');
+        $this->authorizeTournament($request, $match->tournament);
+        abort_unless($match->status === 'scheduled', 422, 'Нельзя менять расписание завершённого матча.');
+
+        $data = $request->validate([
+            'scheduled_at' => ['nullable', 'date'],
+            'map_name' => ['nullable', 'string', 'max:80'],
+        ]);
+
+        $match->update($data);
+
+        return back()->with('success', 'Расписание матча обновлено.');
+    }
+
     public function updateScore(Request $request, TournamentMatch $match): RedirectResponse
     {
         $match->load('tournament');
