@@ -171,6 +171,80 @@ class CompetitionManagementTest extends TestCase
         $this->assertDatabaseMissing('team_members', ['team_id' => $this->teamA->id, 'user_id' => $this->player->id]);
     }
 
+    public function test_admin_can_review_pending_applications_from_any_tournament(): void
+    {
+        $application = Registration::create([
+            'tournament_id' => $this->tournament->id,
+            'user_id' => $this->player->id,
+            'status' => 'pending',
+            'note' => 'Готовы участвовать',
+        ]);
+
+        $this->actingAs($this->admin)
+            ->patch(route('organizer.registrations.review', $application), ['status' => 'accepted'])
+            ->assertRedirect()
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseHas('registrations', [
+            'id' => $application->id,
+            'status' => 'accepted',
+            'reviewed_by' => $this->admin->id,
+        ]);
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $this->player->id,
+            'title' => 'Заявка одобрена',
+        ]);
+    }
+
+    public function test_organizer_cannot_review_another_organizers_application(): void
+    {
+        $otherOrganizer = User::create([
+            'name' => 'Other Organizer',
+            'nickname' => 'other_organizer',
+            'email' => 'otherorganizer@test.local',
+            'password' => bcrypt('SecretPass2026'),
+            'role' => 'organizer',
+        ]);
+        $otherTournament = Tournament::create([
+            'game_id' => $this->tournament->game_id,
+            'organizer_id' => $otherOrganizer->id,
+            'title' => 'Other Cup',
+            'slug' => 'other-cup',
+            'format' => 'single_elimination',
+            'participant_type' => 'team',
+            'team_size' => 5,
+            'max_participants' => 8,
+            'status' => 'published',
+        ]);
+        $application = Registration::create([
+            'tournament_id' => $otherTournament->id,
+            'team_id' => $this->teamA->id,
+            'status' => 'pending',
+        ]);
+
+        $this->actingAs($this->organizer)
+            ->patch(route('organizer.registrations.review', $application), ['status' => 'accepted'])
+            ->assertForbidden();
+
+        $this->assertDatabaseHas('registrations', ['id' => $application->id, 'status' => 'pending']);
+    }
+
+    public function test_admin_panel_shows_pending_applications_for_moderation(): void
+    {
+        Registration::create([
+            'tournament_id' => $this->tournament->id,
+            'user_id' => $this->player->id,
+            'status' => 'pending',
+        ]);
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.index'))
+            ->assertOk()
+            ->assertSee('Заявки на модерации')
+            ->assertSee('Принять')
+            ->assertSee('Отклонить');
+    }
+
     public function test_admin_can_change_another_users_role_but_not_their_own(): void
     {
         $this->actingAs($this->admin)
