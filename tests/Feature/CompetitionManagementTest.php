@@ -229,6 +229,26 @@ class CompetitionManagementTest extends TestCase
         $this->assertDatabaseHas('registrations', ['id' => $application->id, 'status' => 'pending']);
     }
 
+    public function test_organizer_dashboard_shows_upcoming_matches_for_owned_tournaments(): void
+    {
+        TournamentMatch::create([
+            'tournament_id' => $this->tournament->id,
+            'round_number' => 1,
+            'match_number' => 1,
+            'team_a_id' => $this->teamA->id,
+            'team_b_id' => $this->teamB->id,
+            'map_name' => 'Mirage',
+            'status' => 'scheduled',
+        ]);
+
+        $this->actingAs($this->organizer)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('Ближайшие матчи')
+            ->assertSee('Alpha Team')
+            ->assertSee('Mirage');
+    }
+
     public function test_admin_panel_shows_pending_applications_for_moderation(): void
     {
         Registration::create([
