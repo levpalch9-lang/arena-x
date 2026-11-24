@@ -362,4 +362,55 @@ class CompetitionManagementTest extends TestCase
         $this->assertDatabaseHas('tournaments', ['id' => $this->tournament->id, 'status' => 'published']);
     }
 
+
+    public function test_user_can_view_and_mark_their_notifications_as_read(): void
+    {
+        $notification = \\App\\Models\\Notification::create([
+            'user_id' => $this->player->id,
+            'title' => 'Заявка одобрена',
+            'body' => 'Твоя заявка принята.',
+        ]);
+
+        $this->actingAs($this->player)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('Уведомления')
+            ->assertSee('Заявка одобрена');
+
+        $this->actingAs($this->player)
+            ->patch(route('notifications.read', $notification))
+            ->assertRedirect();
+
+        $this->assertDatabaseMissing('notifications', ['id' => $notification->id, 'read_at' => null]);
+    }
+
+    public function test_user_cannot_mark_another_users_notification_as_read(): void
+    {
+        $notification = \\App\\Models\\Notification::create([
+            'user_id' => $this->captain->id,
+            'title' => 'Личное уведомление',
+            'body' => 'Не для другого пользователя.',
+        ]);
+
+        $this->actingAs($this->player)
+            ->patch(route('notifications.read', $notification))
+            ->assertForbidden();
+
+        $this->assertDatabaseHas('notifications', ['id' => $notification->id, 'read_at' => null]);
+    }
+
+    public function test_user_can_mark_all_their_notifications_as_read(): void
+    {
+        \\App\\Models\\Notification::create(['user_id' => $this->player->id, 'title' => 'Первое', 'body' => 'Текст']);
+        \\App\\Models\\Notification::create(['user_id' => $this->player->id, 'title' => 'Второе', 'body' => 'Текст']);
+        \\App\\Models\\Notification::create(['user_id' => $this->captain->id, 'title' => 'Чужое', 'body' => 'Текст']);
+
+        $this->actingAs($this->player)
+            ->patch(route('notifications.read-all'))
+            ->assertRedirect();
+
+        $this->assertSame(0, \\App\\Models\\Notification::where('user_id', $this->player->id)->whereNull('read_at')->count());
+        $this->assertSame(1, \\App\\Models\\Notification::where('user_id', $this->captain->id)->whereNull('read_at')->count());
+    }
+
 }
