@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function (): void {
 
     Route::get('/organizer/tournaments/create', [TournamentManagementController::class, 'create'])->middleware('role:admin,organizer')->name('organizer.tournaments.create');
     Route::post('/organizer/tournaments', [TournamentManagementController::class, 'store'])->middleware('role:admin,organizer')->name('organizer.tournaments.store');
+    Route::patch('/organizer/tournaments/{tournament:slug}/status', [TournamentManagementController::class, 'changeStatus'])->middleware('role:admin,organizer')->name('organizer.tournaments.status');
     Route::post('/organizer/tournaments/{tournament:slug}/matches', [TournamentMatchController::class, 'store'])->middleware('role:admin,organizer')->name('organizer.matches.store');
     Route::patch('/organizer/matches/{match}/score', [TournamentMatchController::class, 'updateScore'])->middleware('role:admin,organizer')->name('organizer.matches.score');
 
