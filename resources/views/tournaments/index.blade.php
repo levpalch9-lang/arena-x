@@ -1,56 +1,38 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Турниры — ARENA X</title>
-    <link rel="preconnect" href="https://images.unsplash.com">
-    <style>
-        :root{color-scheme:dark;--bg:#101114;--panel:#191b20;--line:#2a2d34;--text:#f4f5f7;--muted:#969ba6;--accent:#d8ff45}
-        *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,sans-serif}
-        a{color:inherit;text-decoration:none}.shell{max-width:1180px;margin:auto;padding:0 28px}html{scroll-behavior:smooth}body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(ellipse at 80% 12%,#d8ff4510,transparent 35%)}
-        header{height:78px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
-        .brand{font-size:22px;font-weight:850;letter-spacing:.12em}.brand span{color:var(--accent)}.back{color:#c1c4cb}
-        .intro{padding:64px 0 36px}.eyebrow{color:var(--accent);font-size:12px;letter-spacing:.18em;font-weight:800;text-transform:uppercase}
-        h1{font-size:clamp(38px,5vw,58px);line-height:1.05;letter-spacing:-.05em;margin:12px 0}.intro p{color:var(--muted);max-width:620px}
-        .notice{margin:20px 0;padding:12px 15px;border:1px solid #55533b;background:#242319;border-radius:8px;color:#e8dfaa;font-size:13px}
-        .toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;margin:28px 0 18px;flex-wrap:wrap}
-        .count{color:var(--muted);font-size:13px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;padding-bottom:80px}
-        .card{position:relative;background:linear-gradient(145deg,#1d2026,#15171b);border:1px solid var(--line);border-radius:14px;padding:0 22px 22px;display:flex;flex-direction:column;min-height:310px;overflow:hidden;transition:transform .25s,border-color .25s,box-shadow .25s;animation:rise .65s both}.card:nth-child(2){animation-delay:.12s}.card:nth-child(3){animation-delay:.24s}.card:hover{transform:translateY(-6px);border-color:#68713e;box-shadow:0 18px 45px #0006}.card-art{height:142px;margin:0 -22px 18px;background-size:cover;background-position:center;position:relative}.card-art:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#10111400,#191b20)}.card:nth-child(1) .card-art{background-image:url("https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80")}.card:nth-child(2) .card-art{background-image:url("https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=900&q=80")}.card:nth-child(3) .card-art{background-image:url("https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80")}
-        .top{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:12px}.state{color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.08em}
-        h2{font-size:25px;letter-spacing:-.03em;margin:26px 0 8px}.desc{color:var(--muted);margin:0 0 22px;max-width:600px}
-        .meta{display:flex;gap:20px;flex-wrap:wrap;color:#c5c8cf;font-size:13px;margin-top:auto;padding-top:16px;border-top:1px solid var(--line)}
-        .empty{grid-column:1/-1;padding:54px 30px;border:1px dashed #42454e;border-radius:12px;text-align:center;color:var(--muted);background:linear-gradient(145deg,#1b1e24,#14161a)}@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
-        @media(max-width:700px){.shell{padding:0 18px}.grid{grid-template-columns:1fr}.intro{padding-top:44px}}
-    </style>
-</head>
-<body>
-<div class="shell">
-    <header><a class="brand" href="/">ARENA <span>X</span></a><a class="back" href="/">← На главную</a></header>
-    <main>
-        <section class="intro">
-            <div class="eyebrow">ARENA X / COMPETITIONS</div>
-            <h1>Турниры</h1>
-            <p>Выбирай соревнование, изучай формат и готовь команду к следующему матчу.</p>
-        </section>
-        @if($demoMode)
-            <div class="notice">Демонстрационный режим: показаны примеры турниров. Подключи PostgreSQL в локальном .env, чтобы загружать записи из базы Supabase.</div>
-        @endif
-        <div class="toolbar"><strong>Доступные соревнования</strong><span class="count">{{ $tournaments->count() }} турнира</span></div>
-        <section class="grid">
-            @forelse($tournaments as $tournament)
-                <article class="card">
-                    <div class="card-art" aria-hidden="true"></div>
-                    <div class="top"><span>{{ $tournament->game->short_name ?? $tournament->game->name ?? 'ESPORTS' }}</span><span class="state">{{ $tournament->status === 'published' ? 'Регистрация открыта' : ($tournament->status === 'ongoing' ? 'Идёт турнир' : 'Завершён / закрыт') }}</span></div>
-                    <h2><a href="{{ route('tournaments.show', $tournament) }}">{{ $tournament->title }}</a></h2>
-                    <p class="desc">{{ $tournament->description ?: 'Подробности турнира скоро появятся.' }}</p>
-                    <div class="meta"><span>{{ $tournament->participant_type === 'team' ? 'Командный формат' : 'Индивидуальный формат' }}</span><span>До {{ $tournament->max_participants }} участников</span><span>{{ $tournament->starts_at ? $tournament->starts_at->format('d.m.Y') : 'Дата уточняется' }}</span></div>
-                </article>
-            @empty
-                <div class="empty">Сейчас нет опубликованных турниров. Загляни позже.</div>
-            @endforelse
-        </section>
-    </main>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0d0f">
+<title>Турниры — ARENA X</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#0b0d0f;--surface:#121619;--line:#293136;--text:#f1f3f3;--muted:#929da3;--accent:#c9f15b}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 Manrope,Arial,sans-serif}a{color:inherit;text-decoration:none}.shell{width:min(1180px,calc(100% - 56px));margin:auto}header{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.brand{font-size:18px;font-weight:800;letter-spacing:.15em}.brand em{color:var(--accent);font-style:normal}.brand-mark{display:inline-grid;place-items:center;width:26px;height:26px;margin-right:10px;border:1px solid var(--accent);color:var(--accent);font-size:10px;transform:rotate(45deg);border-radius:4px}.brand-mark span{transform:rotate(-45deg)}.nav{display:flex;gap:22px;align-items:center;color:#b4bec3;font-size:12px}.nav a:hover{color:var(--accent)}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:39px;padding:0 14px;background:var(--accent);color:#13170b;border:0;border-radius:4px;font-size:11px;font-weight:800;cursor:pointer}.btn-ghost{background:transparent;color:var(--text);border:1px solid #3b454a}.intro{padding:57px 0 30px}.kicker{color:var(--accent);font-size:10px;font-weight:800;letter-spacing:.19em}.intro h1{font-size:clamp(38px,5vw,58px);line-height:1.04;letter-spacing:-.06em;margin:12px 0}.intro p{color:var(--muted);max-width:600px;margin:0}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:22px 0 15px}.toolbar strong{font-size:14px}.count{color:var(--muted);font-size:11px}.filters{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr auto;gap:8px;padding:12px;background:#111518;border:1px solid var(--line);margin-bottom:20px}.filters input,.filters select{min-width:0;width:100%;height:40px;padding:0 11px;background:#0b0d0f;border:1px solid #303a40;color:var(--text);font:inherit;font-size:11px;border-radius:3px}.filters input:focus,.filters select:focus{outline:1px solid var(--accent);border-color:var(--accent)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;padding-bottom:36px}.card{background:var(--surface);border:1px solid var(--line);min-width:0;transition:transform .22s,border-color .22s,box-shadow .22s;animation:rise .5s both}.card:hover{transform:translateY(-4px);border-color:#71834a;box-shadow:0 16px 34px #0005}.art{height:142px;position:relative;background:linear-gradient(0deg,#121619 0%,transparent 75%),url("https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=82") center/cover}.card:nth-child(3n+2) .art{background-image:linear-gradient(0deg,#121619 0%,transparent 75%),url("https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=900&q=82")}.card:nth-child(3n) .art{background-image:linear-gradient(0deg,#121619 0%,transparent 75%),url("https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=82")}.art-label{position:absolute;left:15px;bottom:12px;color:var(--accent);font-size:9px;font-weight:800;letter-spacing:.15em}.card-body{padding:16px}.meta-top{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:9px;letter-spacing:.08em}.state{color:var(--accent);font-weight:800}.card h2{font-size:18px;letter-spacing:-.035em;margin:12px 0 6px}.desc{color:var(--muted);font-size:11px;line-height:1.6;min-height:36px;margin:0}.facts{display:flex;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding-top:12px;margin-top:14px;color:#c4cccf;font-size:10px}.open{display:flex;justify-content:space-between;align-items:center;margin-top:15px;color:var(--accent);font-size:10px;font-weight:800;letter-spacing:.06em}.empty{grid-column:1/-1;padding:45px 20px;text-align:center;border:1px dashed #3b464b;color:var(--muted)}.pagination{padding:5px 0 60px;color:var(--muted);font-size:12px}.pagination nav{display:flex;gap:8px;align-items:center;justify-content:center}.pagination a,.pagination span{padding:8px 12px;border:1px solid var(--line)}footer{border-top:1px solid var(--line);padding:22px 0 28px;color:var(--muted);font-size:10px;display:flex;justify-content:space-between}@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.filters{grid-template-columns:repeat(2,1fr)}.filters input{grid-column:1/-1}}@media(max-width:620px){.shell{width:calc(100% - 32px)}header{height:66px}.nav{display:none}.intro{padding:42px 0 24px}.grid{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}.filters input{grid-column:1/-1}.filters button{grid-column:1/-1}.toolbar{align-items:start;flex-direction:column}footer{display:block}footer span{display:block;margin-top:5px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style></head>
+<body><div class="shell">
+<header><a class="brand" href="{{ route('home') }}"><span class="brand-mark"><span>AX</span></span>ARENA <em>X</em></a><nav class="nav"><a href="{{ route('home') }}">Главная</a><a href="{{ route('tournaments.index') }}">Турниры</a>@auth<a href="{{ route('dashboard') }}">Кабинет</a>@else<a href="{{ route('login') }}">Войти</a>@endauth</nav><a class="btn btn-ghost" href="{{ route('home') }}">На главную</a></header>
+<main>
+<section class="intro"><div class="kicker">ARENA X / COMPETITIONS</div><h1>Каталог турниров</h1><p>Выбирай дисциплину, изучай условия участия и следи за соревнованиями. Все данные загружаются из турнирной базы платформы.</p></section>
+<form class="filters" method="GET" action="{{ route('tournaments.index') }}">
+<input type="search" name="q" value="{{ $filters['q'] ?? '' }}" placeholder="Поиск по названию или игре" aria-label="Поиск турниров">
+<select name="game" aria-label="Дисциплина"><option value="">Все дисциплины</option>@foreach($games as $game)<option value="{{ $game->slug }}" @selected(($filters['game'] ?? '') === $game->slug)>{{ $game->name }}</option>@endforeach</select>
+<select name="status" aria-label="Статус"><option value="">Любой статус</option><option value="published" @selected(($filters['status'] ?? '') === 'published')>Регистрация открыта</option><option value="ongoing" @selected(($filters['status'] ?? '') === 'ongoing')>Идёт турнир</option><option value="registration_closed" @selected(($filters['status'] ?? '') === 'registration_closed')>Регистрация закрыта</option><option value="completed" @selected(($filters['status'] ?? '') === 'completed')>Завершён</option></select>
+<select name="date" aria-label="Дата"><option value="">Любая дата</option><option value="upcoming" @selected(($filters['date'] ?? '') === 'upcoming')>Предстоящие</option><option value="past" @selected(($filters['date'] ?? '') === 'past')>Прошедшие</option></select>
+<button class="btn" type="submit">Применить</button>
+</form>
+<div class="toolbar"><strong>Соревнования платформы</strong><span class="count">{{ $tournaments->total() }} результатов</span></div>
+<section class="grid">
+@forelse($tournaments as $tournament)
+<a class="card" href="{{ route('tournaments.show', $tournament) }}">
+<div class="art"><span class="art-label">{{ $tournament->game->short_name ?? $tournament->game->name ?? 'ESPORTS' }}</span></div>
+<div class="card-body">
+<div class="meta-top"><span>{{ strtoupper(str_replace('_', ' ', $tournament->format)) }}</span><span class="state">{{ $tournament->status === 'published' ? 'РЕГИСТРАЦИЯ ОТКРЫТА' : ($tournament->status === 'ongoing' ? 'LIVE' : ($tournament->status === 'completed' ? 'ЗАВЕРШЁН' : 'ЗАКРЫТ')) }}</span></div>
+<h2>{{ $tournament->title }}</h2><p class="desc">{{ \Illuminate\Support\Str::limit($tournament->description ?: 'Подробная информация о соревновании доступна на странице турнира.', 105) }}</p>
+<div class="facts"><span>{{ $tournament->participant_type === 'team' ? 'Командный' : 'Индивидуальный' }}</span><span>{{ $tournament->participants_count }}/{{ $tournament->max_participants }} слотов</span><span>{{ $tournament->starts_at?->format('d.m.Y') ?? 'Дата TBA' }}</span></div>
+<div class="open"><span>ОТКРЫТЬ ТУРНИР</span><span>↗</span></div>
 </div>
-</body>
-</html>
+</a>
+@empty<div class="empty">По выбранным условиям турниров не найдено. Измени фильтры или вернись к полному каталогу.</div>@endforelse
+</section>
+@if($tournaments->hasPages())<div class="pagination">{{ $tournaments->links() }}</div>@endif
+</main>
+<footer><strong>ARENA X</strong><span>Турнирная платформа · 2026</span></footer>
+</div></body></html>
