@@ -21,7 +21,8 @@ class HomePageTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('ARENA X');
-        $response->assertSee('Время выйти');
+        $response->assertSee('Турниры.');
+        $response->assertSee('Ближайшие турниры');
     }
 
     public function test_tournament_catalog_shows_seeded_tournaments(): void
