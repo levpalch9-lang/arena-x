@@ -3,96 +3,136 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#101114">
-    <meta name="description" content="ARENA X — платформа локальных киберспортивных турниров. Команды, матчи и соревнования в одном месте.">
-    <title>ARENA X — Киберспортивные турниры</title>
+    <meta name="theme-color" content="#0b0d0f">
+    <meta name="description" content="ARENA X — турнирная платформа для игроков, команд и организаторов. Турниры, матчи, сетки и результаты.">
+    <title>ARENA X — Турнирная платформа</title>
     <link rel="preconnect" href="https://images.unsplash.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root{color-scheme:dark;--bg:#101114;--panel:#191b20;--line:#2a2d34;--text:#f4f5f7;--muted:#969ba6;--accent:#d8ff45}
-        *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
-        body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(ellipse at 78% 20%,rgba(216,255,69,.075),transparent 34%),radial-gradient(ellipse at 8% 55%,rgba(69,116,255,.06),transparent 32%)}
-        a{color:inherit;text-decoration:none}.shell{max-width:1180px;margin:auto;padding:0 28px}
-        header{height:82px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;animation:drop .7s both}
-        .brand{font-size:22px;font-weight:900;letter-spacing:.12em}.brand span{color:var(--accent)}
-        nav{display:flex;gap:30px;color:#c1c4cb;font-size:14px}nav a,.nav-action{transition:color .2s,border-color .2s,transform .2s}nav a:hover{color:var(--accent)}
-        .nav-action{border:1px solid #464a53;padding:10px 16px;border-radius:8px;font-weight:700}.nav-action:hover{border-color:var(--accent);transform:translateY(-2px)}
-        .hero{padding:92px 0 78px;display:grid;grid-template-columns:1.08fr .92fr;gap:54px;align-items:center;min-height:510px}
-        .eyebrow{color:var(--accent);font-size:12px;letter-spacing:.18em;font-weight:850;text-transform:uppercase}
-        h1{font-size:clamp(46px,6vw,76px);line-height:.99;letter-spacing:-.065em;margin:19px 0 24px;max-width:720px}
-        .lead{color:var(--muted);font-size:17px;max-width:560px}.actions{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap}
-        .button{display:inline-flex;align-items:center;justify-content:center;padding:14px 20px;border-radius:9px;background:var(--accent);color:#15170d;font-weight:850;transition:transform .22s,box-shadow .22s,background .22s}.button:hover{transform:translateY(-3px);box-shadow:0 12px 35px #d8ff4533;background:#e4ff72}.button.secondary{background:#202229;color:var(--text);border:1px solid #383b43}.button.secondary:hover{border-color:#777d88;box-shadow:0 12px 30px #0005}
-        .visual{position:relative;min-height:390px;border:1px solid #ffffff20;border-radius:22px;overflow:hidden;background:#202329;box-shadow:0 30px 90px #0008;isolation:isolate;animation:floatIn 1s .12s both}
-        .visual:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#08090a05 15%,#08090a20 42%,#08090af2 100%),url("https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1400&q=85") center/cover;z-index:-1;transform:scale(1.04);animation:slowZoom 18s ease-in-out infinite alternate}
-        .visual:after{content:"";position:absolute;inset:0;border:1px solid #ffffff0d;border-radius:22px;pointer-events:none}
-        .visual-top{position:absolute;top:22px;left:24px;right:24px;display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#e6e8ec}
-        .online{color:var(--accent);font-weight:900}.online:before{content:"";display:inline-block;width:7px;height:7px;background:var(--accent);border-radius:50%;margin:0 8px 1px 0;box-shadow:0 0 14px var(--accent);animation:pulse 1.8s infinite}
-        .visual-copy{position:absolute;left:26px;right:26px;bottom:26px}.visual-copy h2{font-size:clamp(25px,3vw,36px);line-height:1.05;letter-spacing:-.04em;margin:0 0 9px;max-width:420px}.visual-copy p{color:#c4c7ce;margin:0;max-width:420px}
-        .visual-tag{display:inline-flex;padding:7px 10px;border:1px solid #ffffff40;border-radius:6px;background:#11182780;backdrop-filter:blur(10px);font-size:11px;letter-spacing:.12em;margin-bottom:16px}
-        .section-head{display:flex;justify-content:space-between;align-items:end;margin:24px 0}.section-head h2{font-size:25px;margin:0;letter-spacing:-.03em}.section-head p{color:var(--muted);margin:0}
-        .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding-bottom:82px}
-        .card{position:relative;overflow:hidden;background:linear-gradient(145deg,#1b1e24,#15171b);border:1px solid var(--line);border-radius:14px;padding:0;transition:transform .25s,border-color .25s,box-shadow .25s;animation:rise .7s both}
-        .card:nth-child(2){animation-delay:.12s}.card:nth-child(3){animation-delay:.24s}.card:hover{transform:translateY(-7px);border-color:#68713e;box-shadow:0 18px 45px #0006}
-        .card-art{height:148px;position:relative;background-size:cover;background-position:center;overflow:hidden}.card-art:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#10111400,#101114e8)}
-        .card:nth-child(1) .card-art{background-image:url("https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80")}
-        .card:nth-child(2) .card-art{background-image:url("https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=900&q=80")}
-        .card:nth-child(3) .card-art{background-image:url("https://images.unsplash.com/photo-1560253023-3ec5d502959f?auto=format&fit=crop&w=900&q=80")}
-        .card-body{padding:20px 22px 24px}.card small{color:var(--accent);font-size:11px;letter-spacing:.13em;font-weight:800}.card h3{margin:12px 0 8px;font-size:19px}.card p{color:var(--muted);margin:0}
-        .how{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:18px 0 76px}.step{border-top:1px solid #41444c;padding-top:17px}.step b{color:var(--accent);font-size:12px;letter-spacing:.12em}.step h3{font-size:18px;margin:9px 0 5px}.step p{color:var(--muted);margin:0}
-        footer{border-top:1px solid var(--line);padding:24px 0;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;gap:15px}
-        .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}.reveal.visible{opacity:1;transform:none}
-        @keyframes drop{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}@keyframes floatIn{from{opacity:0;transform:translateY(20px) scale(.98)}to{opacity:1;transform:none}}@keyframes slowZoom{from{transform:scale(1.02)}to{transform:scale(1.12)}}@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 12px var(--accent)}50%{opacity:.45;box-shadow:0 0 2px var(--accent)}}
-        @media(max-width:800px){.shell{padding:0 18px}nav{display:none}.hero{grid-template-columns:1fr;padding:60px 0 48px;gap:32px}.visual{min-height:330px}.cards,.how{grid-template-columns:1fr}.section-head{display:block}.section-head p{margin-top:6px}footer{display:block}footer span{display:block;margin-top:6px}}
+        :root{color-scheme:dark;--bg:#0b0d0f;--surface:#121518;--surface-2:#181c20;--line:#292f34;--text:#f1f3f3;--muted:#929ba1;--accent:#c9f15b;--max:1240px}
+        *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 Manrope,Arial,sans-serif;overflow-x:hidden}a{color:inherit;text-decoration:none}button{font:inherit}
+        .wrap{width:min(var(--max),calc(100% - 64px));margin:auto}.topbar{height:78px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:28px}
+        .brand{display:inline-flex;align-items:center;gap:11px;font-size:19px;font-weight:800;letter-spacing:.16em;white-space:nowrap}.brand-mark{width:29px;height:29px;display:grid;place-items:center;border:1px solid var(--accent);color:var(--accent);font-size:12px;font-weight:800;transform:rotate(45deg);border-radius:5px}.brand-mark span{transform:rotate(-45deg)}.brand em{font-style:normal;color:var(--accent)}
+        .nav{display:flex;align-items:center;gap:29px;color:#b4bdc2;font-size:13px}.nav a{transition:color .2s}.nav a:hover{color:var(--accent)}.nav-actions{display:flex;align-items:center;gap:10px}
+        .btn{display:inline-flex;align-items:center;justify-content:center;min-height:43px;padding:0 17px;border:1px solid transparent;border-radius:5px;background:var(--accent);color:#12160a;font-size:12px;font-weight:800;letter-spacing:.02em;transition:transform .2s,background .2s,border-color .2s}.btn:hover{transform:translateY(-2px);background:#d9ff80}.btn-ghost{background:transparent;border-color:#3b4449;color:var(--text)}.btn-ghost:hover{background:#ffffff08;border-color:#69747a}
+        .hero{min-height:555px;display:grid;grid-template-columns:1.04fr .96fr;gap:52px;align-items:center;padding:66px 0 75px}.kicker{display:flex;align-items:center;gap:10px;color:var(--accent);font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase}.kicker:before{content:"";width:24px;height:1px;background:var(--accent)}
+        h1{font-size:clamp(43px,5.2vw,68px);line-height:1.04;letter-spacing:-.065em;margin:20px 0 20px;max-width:650px;font-weight:800}.hero-copy>p{max-width:520px;color:#a5afb4;font-size:15px;margin:0}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:30px}
+        .hero-meta{display:flex;gap:25px;flex-wrap:wrap;margin-top:46px;padding-top:22px;border-top:1px solid var(--line)}.metric strong{display:block;font-size:22px;letter-spacing:-.04em}.metric span{display:block;color:var(--muted);font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-top:2px}
+        .hero-art{height:415px;position:relative;overflow:hidden;border:1px solid #333d42;background:#171c20;border-radius:7px}.hero-art:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#080b0d35,#080b0d05 55%,#080b0d50),linear-gradient(0deg,#080b0df0 0%,transparent 64%),url("https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1500&q=88") center/cover;transform:scale(1.02);animation:artDrift 18s ease-in-out infinite alternate}
+        .art-index{position:absolute;top:22px;left:23px;right:23px;display:flex;justify-content:space-between;color:#e2e7e8;font-size:10px;font-weight:700;letter-spacing:.16em}.live-dot{color:var(--accent)}.live-dot:before{content:"";display:inline-block;width:6px;height:6px;background:var(--accent);border-radius:50%;margin:0 8px 1px 0}
+        .art-caption{position:absolute;left:25px;right:25px;bottom:24px}.art-caption small{color:var(--accent);font-size:10px;letter-spacing:.16em;font-weight:800}.art-caption h2{font-size:29px;line-height:1.12;letter-spacing:-.04em;margin:8px 0;max-width:400px}.art-caption p{margin:0;color:#c0c9cc;font-size:12px}
+        .section{padding:53px 0 66px;border-top:1px solid var(--line)}.section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:25px}.section-head h2{font-size:26px;letter-spacing:-.05em;margin:7px 0 0}.section-head p{color:var(--muted);font-size:12px;margin:0}.section-link{color:var(--accent);font-size:12px;font-weight:800;white-space:nowrap}
+        .game-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.game{position:relative;min-height:110px;padding:18px 20px;border:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;justify-content:space-between;transition:border-color .2s,transform .2s}.game:hover{border-color:#74864a;transform:translateY(-3px)}.game small{color:var(--muted);font-size:9px;letter-spacing:.15em}.game strong{font-size:17px;letter-spacing:-.03em}.game span{position:absolute;right:19px;top:17px;color:#647078;font-size:20px}
+        .tournament-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.t-card{background:var(--surface);border:1px solid var(--line);min-width:0;transition:transform .22s,border-color .22s,box-shadow .22s}.t-card:hover{transform:translateY(-5px);border-color:#667746;box-shadow:0 18px 40px #0005}.t-cover{height:145px;position:relative;background:linear-gradient(0deg,#111619 0%,transparent 80%),url("https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=82") center/cover}.t-card:nth-child(2) .t-cover{background-image:linear-gradient(0deg,#111619 0%,transparent 80%),url("https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=900&q=82")}.t-card:nth-child(3) .t-cover{background-image:linear-gradient(0deg,#111619 0%,transparent 80%),url("https://images.unsplash.com/photo-1560253023-3ec5d502959f?auto=format&fit=crop&w=900&q=82")}.t-cover-label{position:absolute;left:16px;bottom:13px;color:var(--accent);font-size:9px;letter-spacing:.16em;font-weight:800}.t-body{padding:17px 18px 18px}.t-top{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:10px}.t-status{color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.08em}.t-body h3{font-size:18px;letter-spacing:-.035em;margin:12px 0 6px}.t-body p{font-size:12px;line-height:1.6;color:var(--muted);min-height:38px;margin:0}.t-meta{display:flex;justify-content:space-between;gap:10px;margin-top:16px;padding-top:13px;border-top:1px solid var(--line);color:#c3cacc;font-size:10px}
+        .empty{grid-column:1/-1;padding:30px;border:1px dashed #394247;color:var(--muted);text-align:center}.match-list{border-top:1px solid var(--line)}.match{display:grid;grid-template-columns:105px 1fr auto;gap:20px;align-items:center;padding:15px 5px;border-bottom:1px solid var(--line)}.match-date{color:var(--muted);font-size:11px}.match-name{font-size:13px;font-weight:700}.match-game{display:block;color:var(--muted);font-size:10px;margin-top:3px}.match-state{color:var(--accent);font-size:10px;font-weight:800;letter-spacing:.08em}
+        .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:25px}.step{border-top:1px solid #465057;padding-top:15px}.step b{font-size:10px;letter-spacing:.16em;color:var(--accent)}.step h3{font-size:17px;margin:8px 0 4px}.step p{color:var(--muted);font-size:12px;margin:0;max-width:300px}
+        footer{border-top:1px solid var(--line);padding:25px 0 32px;color:var(--muted);font-size:11px;display:flex;justify-content:space-between;gap:20px}
+        .reveal{opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s ease}.reveal.is-visible{opacity:1;transform:none}
+        @keyframes artDrift{from{transform:scale(1.02)}to{transform:scale(1.1)}}@media(max-width:900px){.wrap{width:min(var(--max),calc(100% - 40px))}.hero{grid-template-columns:1fr;gap:28px;padding:55px 0}.hero-art{height:330px}.nav{gap:16px}.tournament-grid{grid-template-columns:repeat(2,1fr)}.t-card:last-child:nth-child(odd){display:none}}
+        @media(max-width:650px){.wrap{width:calc(100% - 34px)}.topbar{height:68px}.nav{display:none}.brand{font-size:16px}.brand-mark{width:25px;height:25px}.nav-actions .btn{min-height:37px;padding:0 10px;font-size:10px}.hero{padding:42px 0 48px;min-height:auto}h1{font-size:43px}.hero-meta{gap:18px;margin-top:32px}.metric strong{font-size:19px}.hero-art{height:290px}.art-caption h2{font-size:24px}.section{padding:40px 0 48px}.section-head{align-items:start;flex-direction:column;gap:8px}.section-head h2{font-size:23px}.game-row,.tournament-grid,.steps{grid-template-columns:1fr}.t-card:last-child:nth-child(odd){display:block}.t-cover{height:160px}.match{grid-template-columns:78px 1fr;gap:12px}.match-state{grid-column:2}.match-name{font-size:12px}footer{display:block}footer span{display:block;margin-top:6px}}
         @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}}
     </style>
 </head>
 <body>
-<div class="shell">
-    <header>
-        <a class="brand" href="/">ARENA <span>X</span></a>
-        <nav aria-label="Основная навигация"><a href="/tournaments">Турниры</a><a href="#about">О платформе</a><a href="#format">Как играть</a></nav>
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">@auth<a class="nav-action" href="{{ route('dashboard') }}">Личный кабинет</a><form method="POST" action="{{ route('logout') }}" style="margin:0">@csrf<button class="nav-action" type="submit" style="background:transparent;color:inherit;cursor:pointer">Выйти</button></form>@else<a class="nav-action" href="{{ route('login') }}">Войти</a><a class="button" href="{{ route('register') }}" style="padding:10px 14px">Регистрация</a>@endauth</div>
+<div class="wrap">
+    <header class="topbar">
+        <a class="brand" href="{{ route('home') }}"><span class="brand-mark"><span>AX</span></span>ARENA <em>X</em></a>
+        <nav class="nav" aria-label="Главная навигация"><a href="{{ route('tournaments.index') }}">Турниры</a><a href="#games">Дисциплины</a><a href="#matches">Матчи</a><a href="#about">О платформе</a></nav>
+        <div class="nav-actions">
+            @auth
+                @if(auth()->user()->isAdmin())<a class="btn btn-ghost" href="{{ route('admin.index') }}">Администрирование</a>@else<a class="btn btn-ghost" href="{{ route('dashboard') }}">Мой кабинет</a>@endif
+                <form method="POST" action="{{ route('logout') }}">@csrf<button class="btn btn-ghost" type="submit">Выйти</button></form>
+            @else
+                <a class="btn btn-ghost" href="{{ route('login') }}">Войти</a><a class="btn" href="{{ route('register') }}">Создать аккаунт</a>
+            @endauth
+        </div>
     </header>
+
     <main>
-        <section class="hero" id="about">
-            <div>
-                <div class="eyebrow">Твоя игра. Твоя команда. Твой результат.</div>
-                <h1>Время выйти<br>на арену.</h1>
-                <p class="lead">Платформа локальных киберспортивных турниров. Собирай команду, подавай заявку и доказывай своё мастерство.</p>
-                <div class="actions"><a class="button" href="{{ route('tournaments.index') }}">Смотреть турниры&nbsp; ↗</a>@guest<a class="button secondary" href="{{ route('register') }}">Создать аккаунт</a>@else<a class="button secondary" href="{{ route('dashboard') }}">Перейти в кабинет</a>@endguest</div>
+        <section class="hero">
+            <div class="hero-copy">
+                <div class="kicker">Локальная киберспортивная платформа</div>
+                <h1>Турниры.<br>Команды. Победы.</h1>
+                <p>Единое пространство для организации соревнований: от первой заявки до финального счёта. Собирай состав, следи за сеткой и выходи на матч.</p>
+                <div class="hero-actions"><a class="btn" href="{{ route('tournaments.index') }}">Открыть каталог&nbsp; ↗</a>@guest<a class="btn btn-ghost" href="{{ route('register') }}">Присоединиться</a>@else<a class="btn btn-ghost" href="{{ route('dashboard') }}">Перейти в кабинет</a>@endguest</div>
+                <div class="hero-meta">
+                    <div class="metric"><strong>{{ $stats['tournaments'] }}</strong><span>Турниров в системе</span></div>
+                    <div class="metric"><strong>{{ $stats['teams'] }}</strong><span>Команд</span></div>
+                    <div class="metric"><strong>{{ $stats['matches'] }}</strong><span>Матчей создано</span></div>
+                </div>
             </div>
-            <aside class="visual" aria-label="Киберспортивная арена">
-                <div class="visual-top"><span>ARENA X / 2026</span><span class="online">ONLINE</span></div>
-                <div class="visual-copy"><span class="visual-tag">PLAY · COMPETE · WIN</span><h2>Соревнование начинается здесь.</h2><p>Единое пространство для игроков, команд и организаторов.</p></div>
+            <aside class="hero-art">
+                <div class="art-index"><span>ARENA X / TOURNAMENT SYSTEM</span><span class="live-dot">СЕЗОН 2026</span></div>
+                <div class="art-caption"><small>PLAY WITH PURPOSE</small><h2>Каждый матч — шаг к финалу.</h2><p>Турнирная система для игроков, капитанов и организаторов.</p></div>
             </aside>
         </section>
-        <section id="tournaments" class="reveal">
-            <div class="section-head"><h2>Турнирная платформа</h2><p>Всё необходимое для проведения соревнований</p></div>
-            <div class="cards">
-                <article class="card"><div class="card-art"></div><div class="card-body"><small>01 / ИГРОКИ</small><h3>Создавай профиль</h3><p>Укажи игровой никнейм, найди команду и участвуй в соревнованиях.</p></div></article>
-                <article class="card"><div class="card-art"></div><div class="card-body"><small>02 / КОМАНДЫ</small><h3>Играй вместе</h3><p>Собирай состав, управляй участниками и подавай командные заявки.</p></div></article>
-                <article class="card"><div class="card-art"></div><div class="card-body"><small>03 / ТУРНИРЫ</small><h3>Борись за победу</h3><p>Следи за расписанием, матчами, результатами и турнирной таблицей.</p></div></article>
+
+        <section class="section reveal" id="games">
+            <div class="section-head"><div><div class="kicker">01 / ДИСЦИПЛИНЫ</div><h2>Выбери свою игру</h2></div><p>Игровые направления платформы</p></div>
+            <div class="game-row">
+                @forelse($games as $game)
+                    <a class="game" href="{{ route('tournaments.index', ['game' => $game->slug]) }}"><small>DISCIPLINE / {{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</small><strong>{{ $game->name }}</strong><span>↗</span></a>
+                @empty
+                    <div class="empty">Игровые дисциплины скоро появятся.</div>
+                @endforelse
             </div>
         </section>
-        <section id="format" class="reveal">
-            <div class="section-head"><h2>От регистрации до финала</h2><p>Три шага до первого матча</p></div>
-            <div class="how">
-                <article class="step"><b>01 — ПРОФИЛЬ</b><h3>Зарегистрируйся</h3><p>Создай аккаунт и укажи игровой никнейм.</p></article>
-                <article class="step"><b>02 — КОМАНДА</b><h3>Собери состав</h3><p>Создай команду или присоединись к существующей.</p></article>
-                <article class="step"><b>03 — ТУРНИР</b><h3>Подай заявку</h3><p>Выбери соревнование и следи за результатами.</p></article>
+
+        <section class="section reveal" id="tournaments">
+            <div class="section-head"><div><div class="kicker">02 / COMPETITIONS</div><h2>Ближайшие турниры</h2></div><a class="section-link" href="{{ route('tournaments.index') }}">Все соревнования&nbsp; ↗</a></div>
+            <div class="tournament-grid">
+                @forelse($featuredTournaments as $tournament)
+                    <a class="t-card" href="{{ route('tournaments.show', $tournament) }}">
+                        <div class="t-cover"><span class="t-cover-label">{{ $tournament->game->short_name ?? $tournament->game->name }}</span></div>
+                        <div class="t-body">
+                            <div class="t-top"><span>{{ $tournament->format === 'single_elimination' ? 'SINGLE ELIMINATION' : strtoupper(str_replace('_', ' ', $tournament->format)) }}</span><span class="t-status">{{ $tournament->status === 'ongoing' ? 'LIVE' : 'OPEN' }}</span></div>
+                            <h3>{{ $tournament->title }}</h3><p>{{ \Illuminate\Support\Str::limit($tournament->description ?: 'Открой страницу соревнования, чтобы узнать детали.', 100) }}</p>
+                            <div class="t-meta"><span>{{ $tournament->starts_at?->format('d.m.Y') ?? 'Дата уточняется' }}</span><span>{{ $tournament->participants_count }}/{{ $tournament->max_participants }} слотов</span></div>
+                        </div>
+                    </a>
+                @empty
+                    <div class="empty">Опубликованные турниры появятся здесь после создания организатором.</div>
+                @endforelse
+            </div>
+        </section>
+
+        <section class="section reveal" id="matches">
+            <div class="section-head"><div><div class="kicker">03 / MATCH CENTER</div><h2>Расписание матчей</h2></div><p>Ближайшие встречи и текущие игры</p></div>
+            <div class="match-list">
+                @forelse($nextMatches as $match)
+                    <a class="match" href="{{ route('tournaments.show', $match->tournament) }}">
+                        <span class="match-date">{{ $match->scheduled_at?->format('d.m · H:i') ?? 'Время TBA' }}</span>
+                        <span><span class="match-name">{{ $match->teamA->name ?? 'TBD' }} <span style="color:var(--muted)">vs</span> {{ $match->teamB->name ?? 'TBD' }}</span><span class="match-game">{{ $match->tournament->game->short_name ?? 'ESPORTS' }} · {{ $match->tournament->title }}</span></span>
+                        <span class="match-state">{{ $match->status === 'live' ? 'LIVE NOW' : 'UPCOMING' }}</span>
+                    </a>
+                @empty
+                    <div class="empty">Матчи появятся после публикации расписания организаторами.</div>
+                @endforelse
+            </div>
+        </section>
+
+        <section class="section reveal" id="about">
+            <div class="section-head"><div><div class="kicker">04 / HOW IT WORKS</div><h2>От заявки до финала</h2></div><p>Весь турнирный путь в одном месте</p></div>
+            <div class="steps">
+                <article class="step"><b>01 — ACCOUNT</b><h3>Создай профиль</h3><p>Зарегистрируйся, укажи игровой никнейм и настрой свой профиль.</p></article>
+                <article class="step"><b>02 — TEAM</b><h3>Собери команду</h3><p>Создай состав, добавь участников и подготовь командную заявку.</p></article>
+                <article class="step"><b>03 — COMPETE</b><h3>Участвуй и побеждай</h3><p>Следи за расписанием, результатами и положением в турнирной таблице.</p></article>
             </div>
         </section>
     </main>
-    <footer><strong>ARENA X</strong><span>Учебный проект · 2026</span></footer>
+    <footer><strong>ARENA X</strong><span>Платформа локальных киберспортивных турниров · 2026</span><span>PLAY · COMPETE · WIN</span></footer>
 </div>
 <script>
-    (() => {
-        const items = document.querySelectorAll('.reveal');
-        if (!('IntersectionObserver' in window)) { items.forEach(item => item.classList.add('visible')); return; }
-        const observer = new IntersectionObserver(entries => entries.forEach(entry => {
-            if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
-        }), { threshold: 0.12 });
-        items.forEach(item => observer.observe(item));
-    })();
+(() => {
+    const blocks = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) { blocks.forEach(block => block.classList.add('is-visible')); return; }
+    const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+        if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }
+    }), { threshold: .12 });
+    blocks.forEach(block => observer.observe(block));
+})();
 </script>
 </body>
 </html>
