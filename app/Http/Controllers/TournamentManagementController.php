@@ -6,6 +6,7 @@ use App\Models\Game;
 use App\Models\Tournament;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -47,5 +48,52 @@ class TournamentManagementController extends Controller
         ]);
 
         return redirect()->route('dashboard')->with('success', 'Турнир создан.');
+    }
+
+    public function changeStatus(Request $request, Tournament $tournament): RedirectResponse
+    {
+        abort_unless($request->user()->isOrganizer()
+            && ($request->user()->isAdmin() || $tournament->organizer_id === $request->user()->id), 403);
+
+        $data = $request->validate([
+            'status' => ['required', Rule::in(['published', 'registration_closed', 'ongoing', 'completed'])],
+        ]);
+
+        $messages = [
+            'draft' => ['published'],
+            'published' => ['registration_closed', 'ongoing'],
+            'registration_closed' => ['ongoing'],
+            'ongoing' => ['completed'],
+        ];
+
+        DB::transaction(function () use ($tournament, $data, $messages): void {
+            $locked = Tournament::query()->lockForUpdate()->findOrFail($tournament->id);
+            abort_unless(in_array($data['status'], $messages[$locked->status] ?? [], true), 422, 'Недопустимый переход статуса турнира.');
+
+            if ($data['status'] === 'ongoing') {
+                $accepted = $locked->registrations()->where('status', 'accepted');
+                $count = $locked->participant_type === 'team'
+                    ? (clone $accepted)->whereNotNull('team_id')->count()
+                    : (clone $accepted)->whereNotNull('user_id')->count();
+                abort_if($count < 2, 422, 'Для старта турнира нужны минимум два подтверждённых участника.');
+            }
+
+            if ($data['status'] === 'completed') {
+                $matches = $locked->matches();
+                abort_if((clone $matches)->count() === 0, 422, 'Нельзя завершить турнир без проведённых матчей.');
+                abort_if((clone $matches)->where('status', '!=', 'completed')->exists(), 422, 'Сначала завершите все матчи турнира.');
+            }
+
+            $locked->update(['status' => $data['status']]);
+        });
+
+        $labels = [
+            'published' => 'Турнир опубликован.',
+            'registration_closed' => 'Регистрация закрыта.',
+            'ongoing' => 'Турнир начат.',
+            'completed' => 'Турнир завершён.',
+        ];
+
+        return back()->with('success', $labels[$data['status']]);
     }
 }
