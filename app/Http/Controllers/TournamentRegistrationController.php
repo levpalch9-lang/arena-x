@@ -61,7 +61,7 @@ class TournamentRegistrationController extends Controller
 
             Registration::create([
                 'tournament_id' => $locked->id,
-                'user_id' => $user->id,
+                'user_id' => $teamId ? null : $user->id,
                 'team_id' => $teamId,
                 'status' => 'pending',
                 'note' => $data['note'] ?? null,
@@ -82,9 +82,10 @@ class TournamentRegistrationController extends Controller
 
         DB::transaction(function () use ($registration, $data, $user): void {
             $registration->update(['status' => $data['status'], 'reviewed_by' => $user->id, 'reviewed_at' => now()]);
-            if ($registration->user_id) {
+            $notifyUserId = $registration->user_id ?? $registration->team?->captain_id;
+            if ($notifyUserId) {
                 Notification::create([
-                    'user_id' => $registration->user_id,
+                    'user_id' => $notifyUserId,
                     'title' => $data['status'] === 'accepted' ? 'Заявка одобрена' : 'Заявка отклонена',
                     'body' => 'Решение по турниру «'.$registration->tournament->title.'» обновлено.',
                 ]);
