@@ -23,6 +23,8 @@ Route::middleware('guest')->group(function (): void {
 
 Route::middleware('auth')->group(function (): void {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::patch('/notifications/{notification}/read', [\\App\\Http\\Controllers\\NotificationController::class, 'read'])->name('notifications.read');
+    Route::patch('/notifications/read-all', [\\App\\Http\\Controllers\\NotificationController::class, 'readAll'])->name('notifications.read-all');
     Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
     Route::get('/teams/create', [TeamController::class, 'create'])->name('teams.create');
     Route::post('/teams', [TeamController::class, 'store'])->name('teams.store');
