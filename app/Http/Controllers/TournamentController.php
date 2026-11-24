@@ -24,10 +24,11 @@ class TournamentController extends Controller
             ->whereIn('status', ['published', 'registration_closed', 'ongoing', 'completed']);
 
         $query->when($filters['q'] ?? null, function ($builder, $search): void {
-            $builder->where(function ($where) use ($search): void {
-                $where->where('title', 'like', '%'.$search.'%')
-                    ->orWhere('description', 'like', '%'.$search.'%')
-                    ->orWhereHas('game', fn ($game) => $game->where('name', 'like', '%'.$search.'%'));
+            $term = '%'.mb_strtolower($search).'%';
+            $builder->where(function ($where) use ($term): void {
+                $where->whereRaw('LOWER(title) LIKE ?', [$term])
+                    ->orWhereRaw('LOWER(description) LIKE ?', [$term])
+                    ->orWhereHas('game', fn ($game) => $game->whereRaw('LOWER(name) LIKE ?', [$term]));
             });
         });
 
